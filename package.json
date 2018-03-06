@@ -1,0 +1,35 @@
+{
+  "name": "@cardstack/identitymind",
+  "version": "0.0.1",
+  "description": "IdentityMind data source plugin for @cardstack/hub.",
+  "repository": "https://github.com/cardstack/identitymind",
+  "author": "Alex Speller <alex@alexspeller.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 7.7"
+  },
+  "devDependencies": {
+    "@cardstack/eslint-config": "^0.5.0",
+    "@cardstack/test-support": "^0.5.8",
+    "eslint": "4.9.0",
+    "eslint-plugin-ember": "^4.6.1",
+    "eslint-plugin-node": "^5.2.1",
+    "nock": "^9.2.3"
+  },
+  "dependencies": {
+    "@cardstack/di": "^0.5.8",
+    "@cardstack/logger": "^0.1.0",
+    "@cardstack/plugin-utils": "^0.5.8",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "keywords": [
+    "cardstack-plugin"
+  ],
+  "cardstack-plugin": {
+    "api-version": 1
+  },
+  "scripts": {
+    "test": "mocha ./node_modules/@cardstack/test-support/bin/run.js"
+  }
+}
