@@ -5,15 +5,13 @@ module.exports = class Writer {
   static create(params) {
     return new this(params);
   }
-  constructor({ branches, dataSource }) {
-    this.branchConfig = branches;
-    this.dataSource = dataSource;
+  constructor({ dataSource, config }) {
+    this.dataSource   = dataSource;
+    this.config       = config;
   }
 
   async prepareCreate(branch, session, type, document /*, isSchema */) {
-    let config = this.branchConfig[branch];
-
-    let kycResult = await kyc(document.attributes, config);
+    let kycResult = await kyc(document.attributes, this.config);
 
     let newAttributes = Object.assign({}, document.attributes);
     Object.assign(newAttributes, kycResult);
