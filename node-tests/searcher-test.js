@@ -4,11 +4,11 @@ const {
 } = require('@cardstack/test-support/env');
 const JSONAPIFactory = require('@cardstack/test-support/jsonapi-factory');
 const Session = require('@cardstack/plugin-utils/session');
-const sampleResponse = require('./fixtures/kyc-create.js');
+const sampleResponse = require('./fixtures/kyc-retrieve.js');
 const nock = require('nock');
 
 describe('identitymind/writer', function() {
-  let env, writer;
+  let env, searcher;
 
   beforeEach(async function() {
     let factory = new JSONAPIFactory();
@@ -27,50 +27,38 @@ describe('identitymind/writer', function() {
 
     factory.addResource('grants')
       .withAttributes({
-        mayCreateResource: true,
-        mayUpdateResource: false,
-        mayDeleteResource: false,
-        mayWriteFields: true
-      }).withRelated('who', factory.addResource('groups', 'create-only'));
+        mayReadResource: true,
+        mayReadFields: true,
+      })
+      .withRelated('who', { type: 'groups', id: 'everyone' })
+      .withRelated('types', [
+        { type: 'content-types', id: 'identitymind-verifications' }
+      ]);
 
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
-
     // Note: realTime changes to forceRefresh on cardstack master
     await env.lookup('hub:indexers').update({ realTime: true });
-
-    writer = env.lookup('hub:writers');
+    searcher = env.lookup('hub:searchers');
   });
 
   afterEach(async function() {
     await destroyDefaultEnvironment(env);
   });
 
-  it('can send KYC data to identitymind', async function() {
+  it('looks up transactions on identitymind', async function() {
 
     nock('https://test.identitymind.com')
-      .filteringRequestBody( body =>
-        JSON.parse(body).man === 'test@example.com'
-      )
-      .post('/im/account/consumer')
+      .get("/im/account/consumer/92514582")
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
 
+    let model = (await searcher.get(Session.EVERYONE, 'master', 'identitymind-verifications', '92514582')).data;
 
-    let created = await writer.create('master', new Session({ id: 'create-only', type: 'users'}), 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        man: 'test@example.com'
-      }
-    });
-
-    expect(created.type).to.equal('identitymind-verifications');
-    expect(created.id).to.equal('92514582');
-
-    // stores details from request
-    expect(created.attributes.man).to.equal('test@example.com');
+    expect(model.type).to.equal('identitymind-verifications');
+    expect(model.id).to.equal('92514582');
 
     // stores details from response
-    expect(created.attributes.rcd).to.equal('131,101,50005,150,202,1002');
+    expect(model.attributes.state).to.equal('A');
   });
 });
