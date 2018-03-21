@@ -1,17 +1,25 @@
 const PendingChange = require('@cardstack/plugin-utils/pending-change');
 const { kyc } = require('./im');
+const { declareInjections } = require('@cardstack/di');
+const Session = require('@cardstack/plugin-utils/session');
 
-module.exports = class Writer {
+module.exports = declareInjections({
+  searcher:           'hub:searchers',
+  writer:             'hub:writers'
+},
+
+class Writer {
   static create(params) {
     return new this(params);
   }
-  constructor({ dataSource, config }) {
-    this.dataSource   = dataSource;
-    this.config       = config;
+  constructor({ dataSource, config, searcher, writer }) {
+    this.dataSource         = dataSource;
+    this.config             = config;
+    this.searcher           = searcher;
+    this.writer             = writer;
   }
 
   async prepareCreate(branch, session, type, document /*, isSchema */) {
-
     let finalizer = async (pendingChange) => {
       let attributes = pendingChange.finalDocument.attributes;
       let kycResult = await kyc(attributes, this.config);
@@ -20,6 +28,10 @@ module.exports = class Writer {
 
       let id = newAttributes.tid;
       delete newAttributes.tid;
+
+      let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
+      userData.attributes[this.config.kycField] = id;
+      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
 
       pendingChange.finalDocument = {
         type: 'identitymind-verifications',
@@ -31,4 +43,4 @@ module.exports = class Writer {
     let change = new PendingChange(null, document, finalizer);
     return change;
   }
-};
+});

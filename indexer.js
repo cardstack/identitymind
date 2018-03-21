@@ -55,6 +55,37 @@ class Updater {
 
 
     addField('ednaScoreCard', '@cardstack/core-types::object');
+    addField('user', '@cardstack/core-types::belongs-to');
+
+    let addGrant = (id, attributes, who)  => {
+      let grant = {
+        id,
+        type: 'grants',
+        attributes,
+        relationships: {
+          types: {
+            data: [{type: 'content-types', id: 'identitymind-verifications'}]
+          },
+          who: {
+            data: who
+          }
+        }
+      };
+
+      schema.push(grant);
+    };
+
+    addGrant('grant-kyc-creation', {
+      "may-create-resource":  true,
+      "may-update-resource":  false,
+      "may-delete-resource":  false,
+      "may-write-fields":     true
+    }, {type: 'groups', id: 'everyone'});
+
+    addGrant('grant-kyc-retrieval', {
+      "may-read-resource": true,
+      "may-read-fields": true
+    }, {type: 'fields', id: 'user'});
 
     return schema;
   }

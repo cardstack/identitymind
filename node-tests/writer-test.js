@@ -8,7 +8,7 @@ const sampleResponse = require('./fixtures/kyc-create.js');
 const nock = require('nock');
 
 describe('identitymind/writer', function() {
-  let env, writer;
+  let env, writer, searcher;
 
   beforeEach(async function() {
     let factory = new JSONAPIFactory();
@@ -18,21 +18,22 @@ describe('identitymind/writer', function() {
         'source-type': '@cardstack/identitymind',
         params: {
           config: {
-            user: 'testuser',
-            pass: 'testpass',
-            env:  'test'
+            user:       'testuser',
+            pass:       'testpass',
+            env:        'test',
+            userModel:  'users',
+            kycField:   'kyc-transaction'
           }
         }
       });
 
-    factory.addResource('grants')
-      .withAttributes({
-        mayCreateResource: true,
-        mayUpdateResource: false,
-        mayDeleteResource: false,
-        mayWriteFields: true
-      }).withRelated('who', factory.addResource('groups', 'create-only'));
+    factory.addResource('content-types', 'users').withRelated('fields', [
+      factory.addResource('fields', 'kyc-transaction').withAttributes({
+        fieldType: '@cardstack/core-types::string'
+      })
+    ]);
 
+    factory.addResource('users', 'create-only');
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
@@ -40,6 +41,7 @@ describe('identitymind/writer', function() {
     await env.lookup('hub:indexers').update({ realTime: true });
 
     writer = env.lookup('hub:writers');
+    searcher = env.lookup('hub:searchers');
   });
 
   afterEach(async function() {
@@ -72,5 +74,32 @@ describe('identitymind/writer', function() {
 
     // stores details from response
     expect(created.attributes.rcd).to.equal('131,101,50005,150,202,1002');
+  });
+
+  it('associates the identitymind request with the user model', async function() {
+    nock('https://test.identitymind.com')
+      .filteringRequestBody( body =>
+        JSON.parse(body).man === 'test@example.com'
+      )
+      .post('/im/account/consumer')
+      .basicAuth({ user: 'testuser', pass: 'testpass' })
+      .reply(200, sampleResponse);
+
+
+    let session = new Session({ id: 'create-only', type: 'users'});
+
+    await writer.create('master', session, 'identitymind-verifications', {
+      type: 'identitymind-verifications',
+      attributes: {
+        man: 'test@example.com'
+      }
+    });
+
+    await env.lookup('hub:indexers').update({ realTime: true });
+
+    let user = (await searcher.get(env.session, 'master', 'users', 'create-only')).data;
+
+    expect(user.attributes['kyc-transaction']).to.equal("92514582");
+
   });
 });

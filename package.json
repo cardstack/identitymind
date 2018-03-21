@@ -11,6 +11,7 @@
   "devDependencies": {
     "@cardstack/eslint-config": "^0.5.0",
     "@cardstack/test-support": "^0.5.8",
+    "chai-as-promised": "^7.1.1",
     "eslint": "4.9.0",
     "eslint-plugin-ember": "^4.6.1",
     "eslint-plugin-node": "^5.2.1",
@@ -31,6 +32,6 @@
     "api-version": 1
   },
   "scripts": {
-    "test": "mocha ./node_modules/@cardstack/test-support/bin/run.js"
+    "test": "mocha ./node-tests/runner.js"
   }
 }
