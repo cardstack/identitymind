@@ -37,7 +37,6 @@ describe('identitymind/writer', function() {
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
-    // Note: realTime changes to forceRefresh on cardstack master
     await env.lookup('hub:indexers').update({ realTime: true });
 
     writer = env.lookup('hub:writers');

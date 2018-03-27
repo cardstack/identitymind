@@ -1,19 +1,21 @@
-const { kycRetrieve } = require('./im');
-const { declareInjections } = require('@cardstack/di');
-const Session = require('@cardstack/plugin-utils/session');
+const { declareInjections }   = require('@cardstack/di');
+const Session                 = require('@cardstack/plugin-utils/session');
+const moment                  = require('moment');
 
 module.exports = declareInjections({
-  searcher: 'hub:searchers'
+  searcher: 'hub:searchers',
+  indexer:  'hub:indexers'
 },
 
 class IdentitymindSearcher {
   static create(...args) {
     return new this(...args);
   }
-  constructor({ dataSource, config, searcher }) {
+  constructor({ dataSource, config, searcher, indexer }) {
     this.config       = config;
     this.dataSource   = dataSource;
     this.searcher     = searcher;
+    this.indexer      = indexer;
   }
 
   async get(session, branch, type, id, next) {
@@ -27,8 +29,22 @@ class IdentitymindSearcher {
 
       let data;
 
-      if (user && session.payload.type === user.type && session.payload.id === user.id) {
-        data = await this._getVerification(id);
+      let isLoggedInAsSameUser = user && session.payload.type === user.type && session.payload.id === user.id;
+      let isPrivilegedSession = Session.INTERNAL_PRIVILEGED === session;
+
+
+      if (isLoggedInAsSameUser || isPrivilegedSession) {
+        let existingRecord = await next();
+
+        if (!existingRecord) {
+          return await this.reindexThenSearchAgain(session, branch, id);
+        }
+
+        if (!await this.isFresh(existingRecord)) {
+          return await this.reindexThenSearchAgain(session, branch, id);
+        }
+
+        data = existingRecord.data;
 
         data.relationships = data.relationships || {};
         data.relationships.user = {
@@ -45,21 +61,25 @@ class IdentitymindSearcher {
 
       return { data };
     }
-    return next();
+    return await next();
   }
 
   async search(session, branch, query, next) {
     return next();
   }
 
-  async _getVerification(id) {
-    let attributes = await kycRetrieve(id, this.config);
+  async reindexThenSearchAgain(session, branch, id) {
+    await this.indexer.update({ hints: [{ type: "identitymind-verifications", id }] });
+    return await this.searcher.get(session, branch, 'identitymind-verifications', id);
+  }
 
-    return {
-      type: 'identitymind-verifications',
-      id,
-      attributes
-    };
+  async isFresh({ data: {attributes} }) {
+    if (attributes.state === 'A') {
+      // Accepted records are always fresh
+      return true;
+    }
+
+    return moment(attributes['last-checked-at']) > moment().subtract(10, 'hours');
   }
 
 
