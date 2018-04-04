@@ -1,6 +1,4 @@
 module.exports = {
-  "user": "UNKNOWN",
-  "upr": "UNKNOWN",
   "ednaScoreCard": {
     "sc": [],
     "etr": [
@@ -128,13 +126,8 @@ module.exports = {
       "profile": "DEFAULT"
     }
   },
-  "frn": "Unknown Fallthrough",
-  "frp": "ACCEPT",
-  "frd": "Fallthrough for transaction with an unknown entity. No other rules triggered.",
   "mtid": "92514582",
   "state": "P",
   "tid": "92514582",
-  "erd": "Unknown User",
-  "res": "PENDING",
-  "rcd": "131,101,50005,150,202,1002"
+  "rcd": ""
 };

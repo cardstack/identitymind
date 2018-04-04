@@ -1,4 +1,5 @@
-const { isEqual } = require('lodash');
+const { isEqual }       = require('lodash');
+const { kycRetrieve }   = require('./im');
 
 module.exports = class Indexer {
 
@@ -6,7 +7,8 @@ module.exports = class Indexer {
     return new this(...args);
   }
 
-  constructor() {
+  constructor({ config }) {
+    this.config = config;
   }
 
   async branches() {
@@ -14,11 +16,15 @@ module.exports = class Indexer {
   }
 
   async beginUpdate() {
-    return new Updater();
+    return new Updater({config: this.config});
   }
 };
 
 class Updater {
+
+  constructor({ config }) {
+    this.config = config;
+  }
 
   async schema() {
 
@@ -50,12 +56,14 @@ class Updater {
     };
 
     ['man', 'bfn', 'bln', 'bco', 'sco', 'tea', 'dob', 'bsn', 'bz', 'bc', 'bs',
-    'user', 'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res',
-    'rcd'].forEach(f => addField(f));
+    'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res', 'rcd']
+      .forEach(f => addField(f));
 
 
-    addField('ednaScoreCard', '@cardstack/core-types::object');
+    addField('edna-score-card', '@cardstack/core-types::object');
     addField('user', '@cardstack/core-types::belongs-to');
+
+    addField('last-checked-at', '@cardstack/core-types::date');
 
     let addGrant = (id, attributes, who)  => {
       let grant = {
@@ -91,6 +99,22 @@ class Updater {
   }
 
   async updateContent(meta, hints, ops) {
+    if (hints) {
+
+      for(let hint of hints) {
+        if (hint.type === 'identitymind-verifications') {
+          let data = await this._getVerification(hint.id);
+          await ops.save('identitymind-verifications', hint.id, data);
+        }
+      }
+
+    } else {
+      return await this.updateSchema(meta, ops);
+    }
+
+  }
+
+  async updateSchema(meta, ops) {
     let schema = await this.schema();
 
     if (meta) {
@@ -99,11 +123,9 @@ class Updater {
         return;
       }
     }
-    await ops.beginReplaceAll();
     for (let model of schema) {
       await ops.save(model.type, model.id, model);
     }
-    await ops.finishReplaceAll();
     return {
       lastSchema: schema
     };
@@ -114,4 +136,15 @@ class Updater {
       return (await this.schema()).find(model => model.type === type && model.id === model.id);
     }
   }
+
+  async _getVerification(id) {
+    let attributes = await kycRetrieve(id, this.config);
+
+    return {
+      type: 'identitymind-verifications',
+      id,
+      attributes
+    };
+  }
+
 }
