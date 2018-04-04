@@ -56,11 +56,11 @@ class Updater {
     };
 
     ['man', 'bfn', 'bln', 'bco', 'sco', 'tea', 'dob', 'bsn', 'bz', 'bc', 'bs',
-    'user', 'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res',
-    'rcd'].forEach(f => addField(f));
+    'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res', 'rcd']
+      .forEach(f => addField(f));
 
 
-    addField('ednaScoreCard', '@cardstack/core-types::object');
+    addField('edna-score-card', '@cardstack/core-types::object');
     addField('user', '@cardstack/core-types::belongs-to');
 
     addField('last-checked-at', '@cardstack/core-types::date');
@@ -100,7 +100,6 @@ class Updater {
 
   async updateContent(meta, hints, ops) {
     if (hints) {
-      await ops.beginReplaceAll();
 
       for(let hint of hints) {
         if (hint.type === 'identitymind-verifications') {
@@ -109,7 +108,6 @@ class Updater {
         }
       }
 
-      await ops.finishReplaceAll();
     } else {
       return await this.updateSchema(meta, ops);
     }
@@ -125,12 +123,9 @@ class Updater {
         return;
       }
     }
-    await ops.beginReplaceAll();
     for (let model of schema) {
       await ops.save(model.type, model.id, model);
     }
-    await ops.finishReplaceAll();
-
     return {
       lastSchema: schema
     };
