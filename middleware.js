@@ -6,7 +6,7 @@ module.exports = declareInjections({
   indexer: 'hub:indexers'
 },
 
-class CodeGenMiddleware {
+class IdentityMindMiddleware {
   constructor() {
     this.before = 'authentication';
   }
@@ -15,6 +15,11 @@ class CodeGenMiddleware {
     return route.post('/identitymind/consumer-callback',  async (ctxt) => {
       await jsonBody(ctxt, errorThrower);
       let { body } = ctxt.request;
+
+      if (!body.tid) {
+        ctxt.status = 400;
+        return;
+      }
 
       // Lookup the verification that is posted to refresh it from the api
       this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid }] });

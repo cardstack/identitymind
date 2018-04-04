@@ -94,4 +94,10 @@ describe('identitymind/middleware', function() {
     expect(model.attributes.state).to.equal('A');
   });
 
+  it('handles requests with missing tid', async function() {
+    expect(nock.isActive()).to.be.true; // will error if http request is attempted
+    let response = await request.post(`/identitymind/consumer-callback`).send({tid: null});
+    expect(response).hasStatus(400);
+  });
+
 });
