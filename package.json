@@ -27,10 +27,12 @@
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "request": "^2.83.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "ember-cli-babel": "^6.8.2"
   },
   "keywords": [
-    "cardstack-plugin"
+    "cardstack-plugin",
+    "ember-addon"
   ],
   "cardstack-plugin": {
     "api-version": 1

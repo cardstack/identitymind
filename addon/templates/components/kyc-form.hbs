@@ -1,0 +1,14 @@
+<br><br><br>
+KYC Form
+
+{{#each-in fields as |field info|}}
+  <div class="kyc-field">
+    <label for="kyc-field_{{field}}">
+      {{info.name}}
+      <span class="kyc-hint" title={{info.hint}}></span>
+    </label>
+    <input id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} oninput={{action (mut (get values field)) value="target.value"}}>
+  </div>
+{{/each-in}}
+
+<button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}>Submit</button>
