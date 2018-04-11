@@ -1,6 +1,7 @@
 const { declareInjections }   = require('@cardstack/di');
 const route                   = require('koa-better-route');
 const jsonBody                = require('koa-json-body')({ limit: '500kb' });
+const compose                 = require('koa-compose');
 
 module.exports = declareInjections({
   indexer: 'hub:indexers'
@@ -12,6 +13,12 @@ class IdentityMindMiddleware {
   }
 
   middleware() {
+    return compose([
+      this._webhookMiddleware()
+    ]);
+  }
+
+  _webhookMiddleware() {
     return route.post('/identitymind/consumer-callback',  async (ctxt) => {
       await jsonBody(ctxt, errorThrower);
       let { body } = ctxt.request;

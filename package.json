@@ -11,13 +11,8 @@
   "devDependencies": {
     "@cardstack/eslint-config": "^0.5.0",
     "@cardstack/test-support": "^0.5.8",
-    "chai-as-promised": "^7.1.1",
-    "eslint": "4.9.0",
-    "eslint-plugin-ember": "^4.6.1",
-    "eslint-plugin-node": "^5.2.1",
-    "nock": "^9.2.3",
-    "supertest": "^3.0.0",
     "broccoli-asset-rev": "^2.4.5",
+    "chai-as-promised": "^7.1.1",
     "ember-ajax": "^3.0.0",
     "ember-cli": "~3.0.0",
     "ember-cli-dependency-checker": "^2.0.0",
@@ -36,29 +31,34 @@
     "ember-source": "~3.0.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-try": "^0.2.23",
+    "eslint": "4.9.0",
     "eslint-plugin-ember": "^5.0.0",
     "eslint-plugin-node": "^5.2.1",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "nock": "^9.2.3",
+    "supertest": "^3.0.0"
   },
   "dependencies": {
     "@cardstack/di": "^0.5.8",
     "@cardstack/plugin-utils": "^0.5.8",
+    "ember-cli-babel": "^6.8.2",
     "ember-cli-htmlbars": "^2.0.1",
     "koa": "^2.5.0",
     "koa-better-route": "^0.1.0",
+    "koa-compose": "^4.0.0",
     "koa-json-body": "^5.3.0",
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
-    "ember-cli-babel": "^6.8.2"
+    "request-promise-native": "^1.0.5"
   },
   "keywords": [
     "cardstack-plugin",
     "ember-addon"
   ],
   "cardstack-plugin": {
-    "api-version": 1
+    "api-version": 1,
+    "src": "cardstack"
   },
   "scripts": {
     "test": "mocha ./node-tests/runner.js"

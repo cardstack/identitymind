@@ -1,3 +1,7 @@
 module.exports = {
-  "extends": require.resolve("@cardstack/eslint-config/test")
+  root: true,
+  "extends": require.resolve("@cardstack/eslint-config/test"),
+  "parserOptions": {
+     "ecmaVersion": 8
+   }
 };
