@@ -26,7 +26,7 @@ class IdentityMindMiddleware {
   async pluginConfig() {
     let sources = await this.sources.active();
     let source = sources.get('identitymind');
-    return source._params.config;
+    return source.writer.config;
   }
 
   _webhookMiddleware() {
