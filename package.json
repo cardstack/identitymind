@@ -41,6 +41,8 @@
   "dependencies": {
     "@cardstack/di": "^0.5.8",
     "@cardstack/plugin-utils": "^0.5.8",
+    "@cardstack/test-support-authenticator": "^0.6.8",
+    "async-busboy": "^0.6.2",
     "ember-cli-babel": "^6.8.2",
     "ember-cli-htmlbars": "^2.0.1",
     "koa": "^2.5.0",
