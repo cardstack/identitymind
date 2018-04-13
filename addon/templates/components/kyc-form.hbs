@@ -1,14 +1,19 @@
-<br><br><br>
-KYC Form
-
-{{#each-in fields as |field info|}}
-  <div class="kyc-field">
-    <label for="kyc-field_{{field}}">
-      {{info.name}}
-      <span class="kyc-hint" title={{info.hint}}></span>
-    </label>
-    <input id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} oninput={{action (mut (get values field)) value="target.value"}}>
-  </div>
-{{/each-in}}
-
-<button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}>Submit</button>
+<form class="kyc-form">
+  <fieldset>
+    <legend class="title">Submission Form</legend>
+    <div class="detail required">Indicates required field</div>
+    <fieldset class="form-group">
+      {{#each-in fields as |field info|}}
+        <div class="kyc-field">
+          <label for="kyc-field_{{field}}" class="{{field}}">
+            {{info.name}}
+            <span class="kyc-hint" title={{info.hint}}></span>
+          </label>
+          <input class="modal-input" id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} oninput={{action (mut (get values field)) value="target.value"}}>
+        </div>
+      {{/each-in}}
+    </fieldset>
+  </fieldset>
+  <button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}
+    class="button dark">Submit Application</button>
+</form>
