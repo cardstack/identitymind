@@ -3,6 +3,7 @@ const Session         = require('@cardstack/plugin-utils/session');
 const JSONAPIFactory  = require('@cardstack/test-support/jsonapi-factory');
 const sampleResponse  = require('./fixtures/kyc-retrieve.js');
 const nock            = require('nock');
+const moment          = require('moment');
 
 const {
   createDefaultEnvironment,
@@ -71,6 +72,14 @@ describe('identitymind/indexer', function() {
     await env.lookup('hub:indexers').update({ realTime: true, hints: [{type: 'identitymind-verifications', id: "92514582"}] });
     let model = (await searcher.get(Session.INTERNAL_PRIVILEGED, 'master', 'identitymind-verifications', '92514582')).data;
     expect(model.attributes.state).to.equal('A');
+
+    // attributes should be kebab-cased
+    expect(model.attributes['edna-score-card']).to.be.ok;
+
+    // last checked at should be stored
+    let lastChecked = model.attributes['last-checked-at'];
+    expect(lastChecked).to.be.afterMoment(moment().subtract(2, 'seconds'));
+    expect(lastChecked).to.be.beforeMoment(moment());
   });
 
 });

@@ -1,5 +1,6 @@
-const { isEqual }       = require('lodash');
-const { kycRetrieve }   = require('./im');
+const { isEqual, kebabCase } = require('lodash');
+const { kycRetrieve }        = require('./im');
+const moment                 = require('moment');
 
 module.exports = class Indexer {
 
@@ -56,7 +57,8 @@ class Updater {
     };
 
     ['man', 'bfn', 'bln', 'bco', 'sco', 'tea', 'dob', 'bsn', 'bz', 'bc', 'bs',
-    'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res', 'rcd']
+    'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res', 'rcd',
+    'scan-data', 'face-image-data', 'backside-image-data']
       .forEach(f => addField(f));
 
 
@@ -138,7 +140,13 @@ class Updater {
   }
 
   async _getVerification(id) {
-    let attributes = await kycRetrieve(id, this.config);
+    let response = await kycRetrieve(id, this.config);
+    let attributes = Object.keys(response).reduce( (memo, key) => {
+      memo[kebabCase(key)] = response[key];
+      return memo;
+    }, {});
+
+    attributes['last-checked-at'] = moment().format();
 
     return {
       type: 'identitymind-verifications',

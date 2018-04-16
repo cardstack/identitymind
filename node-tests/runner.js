@@ -1,8 +1,8 @@
 // eslint-disable-next-line node/no-extraneous-require
 const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
 
+chai.use(require("chai-as-promised"));
+chai.use(require('chai-moment'));
 
-chai.use(chaiAsPromised);
 
 require('@cardstack/test-support/node-test-runner')();

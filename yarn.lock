@@ -1752,6 +1752,12 @@ chai-as-promised@^7.1.1:
   dependencies:
     check-error "^1.0.2"
 
+chai-moment@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/chai-moment/-/chai-moment-0.1.0.tgz#4a91680cfa3a75cfda18450b2bab65b48c902401"
+  dependencies:
+    moment "^2.10.6"
+
 chai-things@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/chai-things/-/chai-things-0.2.0.tgz#c55128378f9bb399e994f00052151984ed6ebe70"
@@ -5438,6 +5444,10 @@ moment-timezone@^0.5.11:
 "moment@>= 2.9.0", moment@^2.21.0:
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
+
+moment@^2.10.6:
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.1.tgz#529a2e9bf973f259c9643d237fda84de3a26e8ad"
 
 morgan@^1.8.1:
   version "1.9.0"
