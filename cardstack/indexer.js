@@ -1,6 +1,6 @@
-const { isEqual, kebabCase } = require('lodash');
-const { kycRetrieve }        = require('./im');
-const moment                 = require('moment');
+const { isEqual, kebabCase, mapKeys }   = require('lodash');
+const { kycRetrieve }                   = require('./im');
+const moment                            = require('moment');
 
 module.exports = class Indexer {
 
@@ -141,10 +141,7 @@ class Updater {
 
   async _getVerification(id) {
     let response = await kycRetrieve(id, this.config);
-    let attributes = Object.keys(response).reduce( (memo, key) => {
-      memo[kebabCase(key)] = response[key];
-      return memo;
-    }, {});
+    let attributes = mapKeys(response, (v, k) => kebabCase(k));
 
     attributes['last-checked-at'] = moment().format();
 

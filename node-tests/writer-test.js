@@ -50,9 +50,12 @@ describe('identitymind/writer', function() {
   it('can send KYC data to identitymind', async function() {
 
     nock('https://test.identitymind.com')
-      .filteringRequestBody( body =>
-        JSON.parse(body).man === 'test@example.com'
-      )
+      .filteringRequestBody( body => {
+        let attrs = JSON.parse(body);
+        expect(attrs.man).to.equal('test@example.com');
+        expect(attrs.scanData).to.equal('foo');
+        return true
+      })
       .post('/im/account/consumer')
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
@@ -61,7 +64,8 @@ describe('identitymind/writer', function() {
     let created = await writer.create('master', new Session({ id: 'create-only', type: 'users'}), 'identitymind-verifications', {
       type: 'identitymind-verifications',
       attributes: {
-        man: 'test@example.com'
+        man:          'test@example.com',
+        'scan-data':  "foo"
       }
     });
 
