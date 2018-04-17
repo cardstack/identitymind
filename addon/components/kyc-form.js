@@ -3,6 +3,7 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { task } from "ember-concurrency";
 import layout from '../templates/components/kyc-form';
+import { getNames } from 'ember-i18n-iso-countries';
 
 const fields = {
   bfn: {
@@ -23,7 +24,8 @@ const fields = {
   },
   sco: {
     name: "Country of Citizenship",
-    hint: "Country of which User is a citizen"
+    hint: "Country of which User is a citizen",
+    type: 'country'
   },
   bsn: {
     name: "Address",
@@ -43,7 +45,8 @@ const fields = {
   },
   bco: {
     name: "Country",
-    hint: "User's current country of residence"
+    hint: "User's current country of residence",
+    type: 'country'
   }
 };
 
@@ -51,9 +54,12 @@ export default Component.extend({
   classNames: ['kyc-form'],
   store:  service(),
   router: service(),
+  cardstackSession: service(),
 
   layout,
   fields,
+
+  countries: getNames('en'),
 
   submitKyc: task(function * () {
     let values = this.get('values');
@@ -62,6 +68,8 @@ export default Component.extend({
 
     let record = this.get('store').createRecord('identitymind-verification', values);
     yield record.save();
+
+    yield this.get('cardstackSession.user').reload();
 
     yield this.get('router').transitionTo('dashboard');
   }).drop(),

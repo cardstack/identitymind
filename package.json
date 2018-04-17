@@ -45,6 +45,7 @@
     "async-busboy": "^0.6.2",
     "ember-cli-babel": "^6.8.2",
     "ember-cli-htmlbars": "^2.0.1",
+    "ember-i18n-iso-countries": "^1.4.0",
     "koa": "^2.5.0",
     "koa-better-route": "^0.1.0",
     "koa-compose": "^4.0.0",
