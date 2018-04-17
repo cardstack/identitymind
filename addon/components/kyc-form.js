@@ -48,7 +48,10 @@ const fields = {
     name: "Country",
     hint: "User's current country of residence",
     type: 'country'
-  },
+  }
+};
+
+const docUploadFields = {
   scanData: {
     name: 'Document Scan Front',
     hint: "Scan of front side of identity document",
@@ -74,6 +77,7 @@ export default Component.extend({
 
   layout,
   fields,
+  docUploadFields,
 
   countries: getNames('en'),
 
