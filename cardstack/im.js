@@ -1,14 +1,20 @@
 const request = require("request-promise-native");
 
 async function kyc(data, config) {
-  return await imRequest('POST', 'account/consumer', config, data);
+  return await imRequest('POST', 'account/consumer', config, {body: data});
 }
 
 async function kycRetrieve(transactionId, config) {
   return await imRequest('GET', `account/consumer/${transactionId}`, config);
 }
 
-async function imRequest(method, path, { user, pass, env }, body) {
+async function docUpload(transactionId, docStream, config) {
+  let formData = { file: docStream };
+  return await imRequest('POST', `account/consumer/${transactionId}/files`, config, { formData });
+}
+
+
+async function imRequest(method, path, { user, pass, env }, { body, formData } = {}) {
   let baseUrl = `https://${env}.identitymind.com/im`;
 
   let options = {
@@ -25,9 +31,13 @@ async function imRequest(method, path, { user, pass, env }, body) {
     options.body = body;
   }
 
+  if (formData) {
+    options.formData = formData;
+  }
+
   return await request(options);
 }
 
 
 
-module.exports = { kyc, kycRetrieve };
+module.exports = { kyc, kycRetrieve, docUpload };

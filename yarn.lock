@@ -30,6 +30,13 @@
     "@glimmer/di" "^0.2.0"
     resolve "^1.3.3"
 
+"@cardstack/di@^0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@cardstack/di/-/di-0.6.8.tgz#32146ab87e0a3014fd3bde921a903af62e9f2b9d"
+  dependencies:
+    "@glimmer/di" "^0.2.0"
+    resolve "^1.3.3"
+
 "@cardstack/elasticsearch@^0.5.8":
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/@cardstack/elasticsearch/-/elasticsearch-0.5.8.tgz#4c9eef64335dea83a29439887c2116bc69276457"
@@ -108,6 +115,25 @@
     ms "2.0.0"
     superagent "^3.8.1"
     symlink-or-copy "^1.1.8"
+
+"@cardstack/plugin-utils@^0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.6.8.tgz#bde870b405e3ed3aadfea4fcdd58409f1c025548"
+  dependencies:
+    "@cardstack/di" "^0.6.8"
+    broccoli-plugin "^1.3.0"
+    ember-cli-babel "^6.8.2"
+    handlebars "^4.0.6"
+    ms "2.0.0"
+    superagent "^3.8.1"
+    symlink-or-copy "^1.1.8"
+
+"@cardstack/test-support-authenticator@^0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@cardstack/test-support-authenticator/-/test-support-authenticator-0.6.8.tgz#ff1afcaf5eb310f468402d60ed6c8f580b0e1954"
+  dependencies:
+    "@cardstack/di" "^0.6.8"
+    "@cardstack/plugin-utils" "^0.6.8"
 
 "@cardstack/test-support@^0.5.8":
   version "0.5.8"
@@ -421,6 +447,12 @@ assign-symbols@^1.0.0:
 ast-types@0.9.6:
   version "0.9.6"
   resolved "https://registry.yarnpkg.com/ast-types/-/ast-types-0.9.6.tgz#102c9e9e9005d3e7e3829bf0c4fa24ee862ee9b9"
+
+async-busboy@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/async-busboy/-/async-busboy-0.6.2.tgz#1ab713f51ee529be55e27c542323f233f574d95c"
+  dependencies:
+    busboy "^0.2.12"
 
 async-disk-cache@^1.2.1:
   version "1.3.3"
@@ -1591,6 +1623,13 @@ builtins@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/builtins/-/builtins-1.0.3.tgz#cb94faeb61c8696451db36534e1422f94f0aee88"
 
+busboy@^0.2.12:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/busboy/-/busboy-0.2.14.tgz#6c2a622efcf47c57bbbe1e2a9c37ad36c7925453"
+  dependencies:
+    dicer "0.2.5"
+    readable-stream "1.1.x"
+
 bytes@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-1.0.0.tgz#3569ede8ba34315fab99c3e92cb04c7220de1fa8"
@@ -2324,6 +2363,13 @@ detect-indent@^4.0.0:
 detect-libc@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
+
+dicer@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/dicer/-/dicer-0.2.5.tgz#5996c086bb33218c812c090bddc09cd12facb70f"
+  dependencies:
+    readable-stream "1.1.x"
+    streamsearch "0.1.2"
 
 diff@^3.2.0:
   version "3.5.0"
@@ -6380,6 +6426,15 @@ read-pkg@^1.0.0:
     normalize-package-data "^2.3.2"
     path-type "^1.0.0"
 
+readable-stream@1.1.x:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "0.0.1"
+    string_decoder "~0.10.x"
+
 readable-stream@^2, readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stream@^2.1.4:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
@@ -7145,6 +7200,10 @@ static-extend@^0.1.1:
 stealthy-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
+
+streamsearch@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-0.1.2.tgz#808b9d0e56fc273d809ba57338e929919a1a9f1a"
 
 strict-uri-encode@^1.0.0:
   version "1.1.0"

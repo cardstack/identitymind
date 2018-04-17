@@ -6,6 +6,7 @@ const sampleWebhook           = require('./fixtures/kyc-webhook.js');
 const sampleResponse          = require('./fixtures/kyc-retrieve.js');
 const samplePendingResponse   = require('./fixtures/kyc-retrieve-pending.js');
 const nock                    = require('nock');
+const { resolve }             = require('path');
 
 const {
   createDefaultEnvironment,
@@ -42,6 +43,10 @@ describe('identitymind/middleware', function() {
 
     factory.addResource('users', 'user-with-kyc').withAttributes({
       'kyc-transaction': '92514582'
+    });
+
+    factory.addResource('users', 'user-without-kyc').withAttributes({
+      'kyc-transaction': null
     });
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
@@ -100,4 +105,51 @@ describe('identitymind/middleware', function() {
     expect(response).hasStatus(400);
   });
 
+  describe('identitymind/middleware/document-upload', function() {
+    it('returns 401 if there is no user logged in', async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId(null);
+      let response = await request.post(`/identitymind/document-uploads`).send();
+      expect(response).hasStatus(401);
+    });
+
+    it("returns 404 if there is a user logged in but they don't have a kyc transaction associated", async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId('user-without-kyc');
+      let response = await request.post(`/identitymind/document-uploads`).send();
+      expect(response).hasStatus(404);
+    });
+
+    it("Returns 400 if there is a user logged in but they don't attach a file", async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId('user-with-kyc');
+      let response = await request.post(`/identitymind/document-uploads`).send();
+      expect(response).hasStatus(400);
+    });
+
+    it("Returns 400 if they user is logged in and they attach a file with the wrong key", async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId('user-with-kyc');
+      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let response = await request.post(`/identitymind/document-uploads`)
+        .attach('somebadkey', passportPath);
+
+      expect(response).hasStatus(400);
+    });
+
+    it("Uploads the document if there is a user logged in with a kyc transaction and they send a file", async function() {
+      await env.setUserId('user-with-kyc');
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.length > 10000)
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let response = await request.post(`/identitymind/document-uploads`)
+        .attach('file', passportPath);
+
+      expect(response).hasStatus(201);
+    });
+  })
 });
