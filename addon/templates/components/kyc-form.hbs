@@ -10,12 +10,14 @@
             <span class="kyc-hint" title={{info.hint}}></span>
           </label>
           {{#if (eq info.type 'country')}}
-            <select onchange={{action (mut (get values field)) value="target.value"}}>
+            <select id="kyc-field_{{field}}" onchange={{action (mut (get values field)) value="target.value"}} disabled={{submitKyc.isRunning}}>
               <option>Select Country</option>
               {{#each-in countries as |alpha2 name|}}
                 <option value={{alpha2}}>{{name}}</option>
               {{/each-in}}
             </select>
+          {{else if (eq info.type 'file')}}
+            <input type="file" id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} onchange={{perform assignFile field}}>
           {{else}}
             <input class="modal-input" id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} oninput={{action (mut (get values field)) value="target.value"}}>
           {{/if}}

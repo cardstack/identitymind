@@ -4,6 +4,7 @@ import { get } from '@ember/object';
 import { task } from "ember-concurrency";
 import layout from '../templates/components/kyc-form';
 import { getNames } from 'ember-i18n-iso-countries';
+import { Promise } from "rsvp";
 
 const fields = {
   bfn: {
@@ -47,6 +48,21 @@ const fields = {
     name: "Country",
     hint: "User's current country of residence",
     type: 'country'
+  },
+  scanData: {
+    name: 'Document Scan Front',
+    hint: "Scan of front side of identity document",
+    type: "file"
+  },
+  backsideImageData: {
+    name: "Document Scan Back",
+    hint: "Scan of back side of identity document",
+    type: "file"
+  },
+  faceImageData: {
+    name: "Face Image",
+    hint: "Picture of user's face with identity document in frame",
+    type: "file"
   }
 };
 
@@ -73,6 +89,20 @@ export default Component.extend({
 
     yield this.get('router').transitionTo('dashboard');
   }).drop(),
+
+  assignFile: task(function * (field, event) {
+    let file    = event.target.files[0];
+    let reader  = new FileReader();
+
+    let dataUri = yield new Promise(resolve => {
+      reader.addEventListener("load", function () {
+        resolve(reader.result);
+      }, false);
+      reader.readAsDataURL(file);
+    })
+
+    this.set(`values.${field}`, dataUri);
+  }),
 
   init() {
     this.values = {};
