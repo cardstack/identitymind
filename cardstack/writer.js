@@ -1,7 +1,8 @@
-const PendingChange = require('@cardstack/plugin-utils/pending-change');
-const { kyc } = require('./im');
-const { declareInjections } = require('@cardstack/di');
-const Session = require('@cardstack/plugin-utils/session');
+const PendingChange           = require('@cardstack/plugin-utils/pending-change');
+const { kyc }                 = require('./im');
+const { declareInjections }   = require('@cardstack/di');
+const Session                 = require('@cardstack/plugin-utils/session');
+const { mapKeys, camelCase }  = require('lodash');
 
 module.exports = declareInjections({
   searcher:           'hub:searchers',
@@ -21,8 +22,11 @@ class Writer {
 
   async prepareCreate(branch, session, type, document /*, isSchema */) {
     let finalizer = async (pendingChange) => {
-      let attributes = pendingChange.finalDocument.attributes;
-      let kycResult = await kyc(attributes, this.config);
+      let { attributes } = pendingChange.finalDocument;
+
+      let mappedAttributes = mapKeys(attributes, (v, k) => camelCase(k));
+
+      let kycResult = await kyc(mappedAttributes, this.config);
       let newAttributes = Object.assign({}, attributes);
       Object.assign(newAttributes, kycResult);
 
