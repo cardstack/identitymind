@@ -17,11 +17,13 @@ const fields = {
   },
   tea: {
     name: "Email Address",
-    hint: "Email address of user"
+    hint: "Email address of user",
+    type: "email"
   },
   dob: {
     name: "Date of Birth",
-    hint: "User's date of birth"
+    hint: "User's date of birth",
+    type: "date"
   },
   sco: {
     name: "Country of Citizenship",

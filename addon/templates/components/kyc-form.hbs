@@ -1,4 +1,4 @@
-<form class="kyc-form separator">
+<form class="kyc-form">
   <legend class="title">Submission Form</legend>
   <div class="detail required">Indicates required field</div>
   <fieldset class="form-group">
@@ -16,7 +16,7 @@
             {{/each-in}}
           </select>
         {{else}}
-          <input class="modal-input" id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} oninput={{action (mut (get values field)) value="target.value"}}>
+          <input class="modal-input" id="kyc-field_{{field}}" disabled={{submitKyc.isRunning}} value={{get values field}} type={{info.type}} oninput={{action (mut (get values field)) value="target.value"}}>
         {{/if}}
       </div>
     {{/each-in}}
@@ -26,7 +26,8 @@
     <p class="summary">Please upload a photograph or scanned image of a
       state-issued driver’s license, passport, or identity card. Make sure your
       image is clear and detailed; low-quality images will be rejected.</p>
-    <div class="summary file-icon">Document Capture Best Practices</div>
+    <div class="summary file-icon"><a href="/assets/media/doc-capture-best-practices.pdf" target="_blank">
+      Document Capture Best Practices</a></div>
     {{#each-in docUploadFields as |field info|}}
       <fieldset class="kyc-field doc-upload">
         <div class="form-group-inset">
