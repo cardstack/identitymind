@@ -104,6 +104,12 @@
   dependencies:
     ms "2.0.0"
 
+"@cardstack/logger@cardstack/logger":
+  version "0.1.0"
+  resolved "https://codeload.github.com/cardstack/logger/tar.gz/87a97a29039c4579139efb76f4e97c3155086ea1"
+  dependencies:
+    ms "2.0.0"
+
 "@cardstack/plugin-utils@^0.5.8":
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.5.8.tgz#63e9edad7b7ec66775a1a25ac3e51168732b4d24"

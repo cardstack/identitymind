@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@cardstack/di": "^0.5.8",
+    "@cardstack/logger": "cardstack/logger",
     "@cardstack/plugin-utils": "^0.5.8",
     "@cardstack/test-support-authenticator": "^0.6.8",
     "async-busboy": "^0.6.2",

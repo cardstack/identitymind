@@ -1,6 +1,7 @@
 const { isEqual, kebabCase, mapKeys }   = require('lodash');
 const { kycRetrieve }                   = require('./im');
 const moment                            = require('moment');
+const log                               = require('@cardstack/logger')('cardstack/identitymind');
 
 module.exports = class Indexer {
 
@@ -98,6 +99,9 @@ class Updater {
       "may-read-resource":    true,
       "may-read-fields":      true
     }, {type: 'fields', id: 'user'});
+
+    log.debug("Generated schema for IM plugin is:");
+    log.debug(JSON.stringify(schema, null, 2));
 
     return schema;
   }
