@@ -151,5 +151,5 @@ describe('identitymind/middleware', function() {
 
       expect(response).hasStatus(201);
     });
-  })
+  });
 });
