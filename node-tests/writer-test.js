@@ -54,7 +54,7 @@ describe('identitymind/writer', function() {
         let attrs = JSON.parse(body);
         expect(attrs.man).to.equal('test@example.com');
         expect(attrs.scanData).to.equal('foo');
-        return true
+        return true;
       })
       .post('/im/account/consumer')
       .basicAuth({ user: 'testuser', pass: 'testpass' })
