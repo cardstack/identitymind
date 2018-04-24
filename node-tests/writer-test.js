@@ -66,6 +66,14 @@ describe('identitymind/writer', function() {
       attributes: {
         man:          'test@example.com',
         'scan-data':  "foo"
+      },
+      relationships: {
+        user: {
+          data: {
+            id: 'create-only',
+            type: 'users'
+          }
+        }
       }
     });
 
@@ -95,6 +103,14 @@ describe('identitymind/writer', function() {
       type: 'identitymind-verifications',
       attributes: {
         man: 'test@example.com'
+      },
+      relationships: {
+        user: {
+          data: {
+            id: 'create-only',
+            type: 'users'
+          }
+        }
       }
     });
 

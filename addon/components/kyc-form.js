@@ -87,6 +87,7 @@ export default Component.extend({
     let values = this.get('values');
 
     values.man = `${get(values, 'bfn')} ${get(values, 'bln')}`;
+    values.user = this.get('cardstackSession.user');
 
     let record = this.get('store').createRecord('identitymind-verification', values);
     yield record.save();
