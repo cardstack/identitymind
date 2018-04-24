@@ -44,13 +44,14 @@ class Updater {
 
     let schema = [contentType];
 
-    let addField = (fieldName, type="@cardstack/core-types::string") => {
+    let addField = (fieldName, type="@cardstack/core-types::string", relationships={}) => {
       let field = {
         type: 'fields',
         id: fieldName,
         attributes: {
           'field-type': type
-        }
+        },
+        relationships
       };
       schema.push(field);
       contentType.relationships.fields.data.push({type: 'fields', id: fieldName});
@@ -61,9 +62,13 @@ class Updater {
     'scan-data', 'face-image-data', 'backside-image-data']
       .forEach(f => addField(f));
 
-
     addField('edna-score-card', '@cardstack/core-types::object');
-    addField('user', '@cardstack/core-types::belongs-to');
+    addField('user', '@cardstack/core-types::belongs-to', {
+      'related-types': {
+        data: [{ type: 'content-types', id: this.config.userModel }]
+      }
+    });
+
 
     addField('last-checked-at', '@cardstack/core-types::date');
 
