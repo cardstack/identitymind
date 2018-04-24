@@ -6,18 +6,20 @@ const { mapKeys, camelCase }  = require('lodash');
 
 module.exports = declareInjections({
   searcher:           'hub:searchers',
-  writer:             'hub:writers'
+  writer:             'hub:writers',
+  indexer:            'hub:indexers'
 },
 
 class Writer {
   static create(params) {
     return new this(params);
   }
-  constructor({ dataSource, config, searcher, writer }) {
+  constructor({ dataSource, config, searcher, writer, indexer }) {
     this.dataSource         = dataSource;
     this.config             = config;
     this.searcher           = searcher;
     this.writer             = writer;
+    this.indexer            = indexer;
   }
 
   async prepareCreate(branch, session, type, document /*, isSchema */) {
@@ -36,6 +38,7 @@ class Writer {
       let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
       userData.attributes[this.config.kycField] = id;
       await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
+      await this.indexer.update({ realTime: true });
 
       pendingChange.finalDocument = {
         type: 'identitymind-verifications',

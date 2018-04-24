@@ -98,8 +98,6 @@ describe('identitymind/writer', function() {
       }
     });
 
-    await env.lookup('hub:indexers').update({ realTime: true });
-
     let user = (await searcher.get(env.session, 'master', 'users', 'create-only')).data;
 
     expect(user.attributes['kyc-transaction']).to.equal("92514582");
