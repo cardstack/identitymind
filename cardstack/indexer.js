@@ -89,12 +89,9 @@ class Updater {
       "may-create-resource":  true,
       "may-update-resource":  false,
       "may-delete-resource":  false,
-      "may-write-fields":     true
-    }, {type: 'groups', id: 'everyone'});
-
-    addGrant('grant-kyc-retrieval', {
-      "may-read-resource": true,
-      "may-read-fields": true
+      "may-write-fields":     true,
+      "may-read-resource":    true,
+      "may-read-fields":      true
     }, {type: 'fields', id: 'user'});
 
     return schema;
