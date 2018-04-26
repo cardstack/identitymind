@@ -1,5 +1,4 @@
 import IdentitymindVerification from "@cardstack/models/generated/identitymind-verification";
-import { computed } from "@ember/object";
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
@@ -20,7 +19,4 @@ const Validations = buildValidations({
 });
 
 export default IdentitymindVerification.extend(Validations, {
-  man: computed('bfn', 'bln', function() {
-    return `${this.get('bfn')} ${this.get('bln')}`;
-  })
 });
