@@ -142,7 +142,13 @@ class Pdf {
   }
 
   async pipe(dst) {
+    this.generate();
     await streamToPromise(this.doc.pipe(dst));
+  }
+
+  toStream() {
+    this.generate();
+    return this.doc;
   }
 
   // The pdfkit text stuff is really stateful. This method makes it use sane
@@ -180,8 +186,9 @@ class Pdf {
   }
 }
 
+module.exports = Pdf;
+
 if (require.main.filename === __filename) {
   let pdf = new Pdf({name: 'askdfh alskdjf laksjdf', surname: 'sadf as', dob: '234 123423 234234', address: "At eros prompta eum, id sea oportere dignissim. Mei diam imperdiet complectitur no, cu eam vidit novum. Ad nullam detraxit abhorreant eum, ex pro dicit libris, fabellas legendos duo et. An molestie argumentum consectetuer sit, quo at diceret euripidis."});
-  pdf.generate();
   pdf.writeToFile('tmp/tmp.pdf').then(() => exec("open tmp/tmp.pdf"));
 }

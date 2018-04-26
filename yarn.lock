@@ -503,15 +503,15 @@ async-promise-queue@^1.0.3, async-promise-queue@^1.0.4:
     async "^2.4.1"
     debug "^2.6.8"
 
-async@^1.4.0, async@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
-
-async@^2.4.1:
+async@>=0.2.6, async@^2.4.1:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.0.tgz#61a29abb6fcc026fea77e56d1c6ec53a795951f4"
   dependencies:
     lodash "^4.14.0"
+
+async@^1.4.0, async@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
 async@~0.2.9:
   version "0.2.10"
@@ -5571,6 +5571,10 @@ lodash@^4.0.0, lodash@^4.12.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, l
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
+lodash@~2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.3.0.tgz#dfbdac99cf87a59a022c474730570d8716c267dd"
+
 log-symbols@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-2.2.0.tgz#5740e1c5d6f0dfda4ad9323b5332107ef6b4c40a"
@@ -6190,7 +6194,7 @@ only@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
 
-optimist@^0.6.1:
+optimist@>=0.3.5, optimist@^0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/optimist/-/optimist-0.6.1.tgz#da3ea74686fa21a19a111c326e90eb15a0196686"
   dependencies:
@@ -6390,6 +6394,22 @@ path-type@^1.0.0:
 pathval@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
+
+pdf-text@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/pdf-text/-/pdf-text-0.4.0.tgz#a3c9a16ea448ef6024ca9955deb255f30f8b9ac2"
+  dependencies:
+    lodash "~2.3.0"
+    pdf3json "0.2.0"
+
+pdf3json@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/pdf3json/-/pdf3json-0.2.0.tgz#5892d77e30d5d41af379ce20268ff6a956c6fd85"
+  dependencies:
+    async ">=0.2.6"
+    optimist ">=0.3.5"
+    underscore ">=1.4.2"
+    xmldom ">=0.1.13"
 
 pdfkit@^0.8.3:
   version "0.8.3"
@@ -8317,6 +8337,10 @@ underscore.string@~3.3.4:
     sprintf-js "^1.0.3"
     util-deprecate "^1.0.2"
 
+underscore@>=1.4.2:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.0.tgz#31dbb314cfcc88f169cd3692d9149d81a00a73e4"
+
 underscore@>=1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
@@ -8605,7 +8629,7 @@ xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
 
-xmldom@^0.1.19:
+xmldom@>=0.1.13, xmldom@^0.1.19:
   version "0.1.27"
   resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.1.27.tgz#d501f97b3bdb403af8ef9ecc20573187aadac0e9"
 

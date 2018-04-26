@@ -7,6 +7,9 @@ const sampleResponse          = require('./fixtures/kyc-retrieve.js');
 const samplePendingResponse   = require('./fixtures/kyc-retrieve-pending.js');
 const nock                    = require('nock');
 const { resolve }             = require('path');
+const { promisify }           = require("util");
+const pdfText                 = promisify(require('pdf-text'));
+
 
 const {
   createDefaultEnvironment,
@@ -43,6 +46,30 @@ describe('identitymind/middleware', function() {
 
     factory.addResource('users', 'user-with-kyc').withAttributes({
       'kyc-transaction': '92514582'
+    });
+
+    factory.addResource('users', 'user-with-cached-kyc').withAttributes({
+      'kyc-transaction': '92514583'
+    });
+
+    factory.addResource('content-types', 'identitymind-verifications').withRelated('fields',
+      ['bfn','bln','dob','sco','bsn','bz','bc','bs','bco'].map(fieldName =>
+        factory.addResource('fields', fieldName).withAttributes({
+          fieldType: '@cardstack/core-types::string'
+        })
+      )
+    );
+
+    factory.addResource('identitymind-verifications', '92514583').withAttributes({
+      bfn:  "Firstname",
+      bln:  "Lastname",
+      dob:  "1985-01-01",
+      sco:  "GB",
+      bsn:  "123 Acacia Avenue",
+      bz:   "90210",
+      bc:   "London",
+      bs:   "England",
+      bco:  "GB"
     });
 
     factory.addResource('users', 'user-without-kyc').withAttributes({
@@ -151,5 +178,40 @@ describe('identitymind/middleware', function() {
 
       expect(response).hasStatus(201);
     });
+  });
+
+  describe('identitymind/middleware/bcs-pdf', function() {
+    it('returns 401 if there is no user logged in', async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId(null);
+      let response = await request.get(`/identitymind/bcs-pdf`).send();
+      expect(response).hasStatus(401);
+    });
+
+    it("returns 404 if there is a user logged in but they don't have a kyc transaction associated", async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId('user-without-kyc');
+      let response = await request.get(`/identitymind/bcs-pdf`).send();
+      expect(response).hasStatus(404);
+    });
+
+    it("Downloads the pdf if the user is logged in with a KYC transaction", async function() {
+      expect(nock.isActive()).to.be.true; // will error if http request is attempted
+      await env.setUserId('user-with-cached-kyc');
+      let response = await request.get(`/identitymind/bcs-pdf`).send();
+
+      expect(response).hasStatus(200);
+
+      let textInPdf = (await pdfText(response.body)).join("\n");
+
+      expect(textInPdf).to.contain("Firstname");
+      expect(textInPdf).to.contain("Lastname");
+      expect(textInPdf).to.contain("GB");
+      expect(textInPdf).to.contain("123 Acacia Avenue, London, England, 90210");
+      expect(textInPdf).to.contain("1985-01-01");
+      expect(response.type).to.equal("application/pdf");
+
+    });
+
   });
 });
