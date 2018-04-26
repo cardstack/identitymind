@@ -1,0 +1,19 @@
+<label for="kyc-field_{{field}}" class="{{field}}">
+  {{info.name}}
+  <span class="kyc-hint" title={{info.hint}}></span>
+</label>
+{{#if (eq info.type 'country')}}
+  <select id="kyc-field_{{field}}" onchange={{action (mut (get model field)) value="target.value"}} disabled={{isDisabled}}>
+    <option>Select Country</option>
+    {{#each-in countries as |alpha2 name|}}
+      <option value={{alpha2}}>{{name}}</option>
+    {{/each-in}}
+  </select>
+{{else}}
+  {{input type=info.type value=value class='modal-input' name=field id=(concat "kyc-field_" field) disabled=isDisabled}}
+{{/if}}
+{{#if showErrorMessage}}
+  <div class='field-error'>
+    {{get model.validations.attrs (concat field '.message')}}
+  </div>
+{{/if}}

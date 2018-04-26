@@ -1,10 +1,11 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-import { task } from "ember-concurrency";
+import { task } from 'ember-concurrency';
 import layout from '../templates/components/kyc-form';
-import { getNames } from 'ember-i18n-iso-countries';
 import { Promise } from "rsvp";
+import Ember from 'ember';
+
+const { testing } = Ember;
 
 const fields = {
   bfn: {
@@ -80,25 +81,40 @@ export default Component.extend({
   layout,
   fields,
   docUploadFields,
-
-  countries: getNames('en'),
+  didValidate: false,
+  postSubmit: null,
+  hasErrors: null,
 
   submitKyc: task(function * () {
-    let values = this.get('values');
+    let model = this.get('model');
 
-    values.man = `${get(values, 'bfn')} ${get(values, 'bln')}`;
-    values.user = this.get('cardstackSession.user');
+    let { validations } = yield model.validate();
 
-    let record = this.get('store').createRecord('identitymind-verification', values);
-    yield record.save();
+    this.set('didValidate', true);
 
-    yield this.get('cardstackSession.user').reload();
+    if (validations.get('isValid')) {
+      model.set('user', this.get('cardstackSession.user'));
 
-    yield this.get('router').transitionTo('dashboard');
+      yield model.save();
+
+      yield this.get('cardstackSession.user').reload();
+
+      let postSubmit = this.get('postSubmit');
+
+      if (typeof postSubmit === 'function') {
+        postSubmit();
+      }
+    } else {
+      let hasErrors = this.get('hasErrors');
+
+      if (typeof hasErrors === 'function') {
+        hasErrors();
+      }
+    }
   }).drop(),
 
   assignFile: task(function * (field, event) {
-    let file    = event.target.files[0];
+    let file = testing ? event.detail.testingFiles[0] : event.target.files[0];
     let reader  = new FileReader();
 
     let dataUri = yield new Promise(resolve => {
@@ -108,11 +124,11 @@ export default Component.extend({
       reader.readAsDataURL(file);
     })
 
-    this.set(`values.${field}`, dataUri);
+    this.set(`model.${field}`, dataUri);
   }),
 
   init() {
-    this.values = {};
+    this.model = this.get('store').createRecord('identitymind-verification');
     this._super(...arguments);
   }
 });
