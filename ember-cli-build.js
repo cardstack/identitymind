@@ -4,10 +4,13 @@
 
 // eslint-disable-next-line node/no-unpublished-require
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const path = require('path');
 
 module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
-    // Add options here
+    'ember-cli-mirage': {
+      directory: path.resolve(__dirname, path.join('tests', 'dummy', 'mirage'))
+    }
   });
 
   /*
