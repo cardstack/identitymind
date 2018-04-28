@@ -2734,6 +2734,18 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+data-uri-to-buffer@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-0.0.3.tgz#18ae979a6a0ca994b0625853916d2662bbae0b1a"
+
+datauri@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/datauri/-/datauri-1.1.0.tgz#c6184ff6b928ede4e41ccc23ab954c7839c4fb39"
+  dependencies:
+    image-size "^0.6.2"
+    mimer "^0.3.2"
+    semver "^5.5.0"
+
 debug@*, debug@3.1.0, debug@^3.1.0, debug@~3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
@@ -5164,6 +5176,10 @@ ignore@^3.2.0, ignore@^3.3.3, ignore@^3.3.6:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-3.3.7.tgz#612289bfb3c220e186a58118618d5be8c1bab021"
 
+image-size@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.2.tgz#8ee316d4298b028b965091b673d5f1537adee5b4"
+
 imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
@@ -6290,6 +6306,10 @@ lodash.keys@~2.3.0:
     lodash._shimkeys "~2.3.0"
     lodash.isobject "~2.3.0"
 
+lodash.matches@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.matches/-/lodash.matches-4.6.0.tgz#ae1affba8047f02368905fe585376bd2c10aaf5e"
+
 lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -6696,6 +6716,10 @@ mime@1.4.1:
 mime@^1.4.1:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
+
+mimer@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/mimer/-/mimer-0.3.2.tgz#0b83aabdf48eaacfd2e093ed4c0ed3d38eda8073"
 
 mimic-fn@^1.0.0:
   version "1.2.0"
@@ -7403,6 +7427,12 @@ p-try@^1.0.0:
 pako@^0.2.5:
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/pako/-/pako-0.2.9.tgz#f3f7522f4ef782348da8161bad9ecfd51bf83a75"
+
+parse-data-uri@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/parse-data-uri/-/parse-data-uri-0.2.0.tgz#bf04d851dd5c87b0ab238e5d01ace494b604b4c9"
+  dependencies:
+    data-uri-to-buffer "0.0.3"
 
 parse-glob@^3.0.4:
   version "3.0.4"

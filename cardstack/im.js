@@ -8,8 +8,7 @@ async function kycRetrieve(transactionId, config) {
   return await imRequest('GET', `account/consumer/${transactionId}`, config);
 }
 
-async function docUpload(transactionId, docStream, config) {
-  let formData = { file: docStream };
+async function docUpload(transactionId, formData, config) {
   return await imRequest('POST', `account/consumer/${transactionId}/files`, config, { formData });
 }
 
