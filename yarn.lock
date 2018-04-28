@@ -110,7 +110,7 @@
     tar-fs "^1.16.0"
     tar-stream "^1.5.4"
 
-"@cardstack/logger@^0.1.0", "@cardstack/logger@cardstack/logger":
+"@cardstack/logger@^0.1.0":
   version "0.1.0"
   resolved "https://codeload.github.com/cardstack/logger/tar.gz/87a97a29039c4579139efb76f4e97c3155086ea1"
   dependencies:
