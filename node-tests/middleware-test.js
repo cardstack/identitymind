@@ -82,7 +82,7 @@ describe('identitymind/middleware', function() {
     app.use(env.lookup('hub:middleware-stack').middleware());
     request = supertest(app.callback());
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
     searcher = env.lookup('hub:searchers');
   }
 
@@ -115,7 +115,7 @@ describe('identitymind/middleware', function() {
     // The webhook should only trigger indexing, not wait for it
     expect(scope.isDone()).to.not.be.ok;
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
 
     // the indexing process should be triggered with hints from the webhook, so
     // the indexer should have made the http request by now
