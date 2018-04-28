@@ -51,25 +51,7 @@ class IdentityMindMiddleware {
 
   _pdfMiddleware() {
     return route.get('/identitymind/bcs-pdf', async (ctxt) => {
-      let user = await this._checkKycUser(ctxt);
-      if (!user) { return; }
-
-      let config = await this.pluginConfig();
-      let kycTransactionId = user.data.attributes[config.kycField];
-      let kycTransaction = await this.searcher.getFromControllingBranch(ctxt.state.cardstackSession, 'identitymind-verifications', kycTransactionId);
-
-      let attributes = kycTransaction.data.attributes;
-
-      let data = {
-        name:         attributes.bfn,
-        surname:      attributes.bln,
-        dob:          attributes.dob,
-        nationality:  attributes.sco,
-        address:      `${attributes.bsn}, ${attributes.bc}, ${attributes.bs}, ${attributes.bz}`,
-        country:      attributes.bco
-      };
-
-      let pdf = new Pdf(data);
+      let pdf = new Pdf(ctxt.request.query);
       ctxt.status = 200;
       ctxt.body = pdf.toStream();
       ctxt.type = 'pdf';

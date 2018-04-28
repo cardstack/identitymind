@@ -41,7 +41,7 @@ describe('identitymind/writer', function() {
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
 
     writer = env.lookup('hub:writers');
     searcher = env.lookup('hub:searchers');

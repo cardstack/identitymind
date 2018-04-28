@@ -69,7 +69,7 @@ class Writer {
       let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
       userData.attributes[this.config.kycField] = id;
       await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
-      await this.indexer.update({ realTime: true });
+      await this.indexer.update({ forceRefresh: true });
 
       pendingChange.finalDocument = {
         type: 'identitymind-verifications',

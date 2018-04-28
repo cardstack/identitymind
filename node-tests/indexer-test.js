@@ -47,7 +47,7 @@ describe('identitymind/indexer', function() {
     let app = new Koa();
     app.use(env.lookup('hub:middleware-stack').middleware());
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
     searcher = env.lookup('hub:searchers');
   }
 
@@ -60,7 +60,7 @@ describe('identitymind/indexer', function() {
 
   it("Doesn't index a transaction when not asked to do so with hints", async function() {
     expect(nock.isActive()).to.be.true; // will error if http request is attempted
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
   });
 
   it("Looks up a transaction when asked to do so with hints", async function() {
@@ -69,7 +69,7 @@ describe('identitymind/indexer', function() {
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
 
-    await env.lookup('hub:indexers').update({ realTime: true, hints: [{type: 'identitymind-verifications', id: "92514582"}] });
+    await env.lookup('hub:indexers').update({ forceRefresh: true, hints: [{type: 'identitymind-verifications', id: "92514582"}] });
     let model = (await searcher.get(Session.INTERNAL_PRIVILEGED, 'master', 'identitymind-verifications', '92514582')).data;
     expect(model.attributes.state).to.equal('A');
 

@@ -60,18 +60,6 @@ describe('identitymind/middleware', function() {
       )
     );
 
-    factory.addResource('identitymind-verifications', '92514583').withAttributes({
-      bfn:  "Firstname",
-      bln:  "Lastname",
-      dob:  "1985-01-01",
-      sco:  "GB",
-      bsn:  "123 Acacia Avenue",
-      bz:   "90210",
-      bc:   "London",
-      bs:   "England",
-      bco:  "GB"
-    });
-
     factory.addResource('users', 'user-without-kyc').withAttributes({
       'kyc-transaction': null
     });
@@ -82,7 +70,7 @@ describe('identitymind/middleware', function() {
     app.use(env.lookup('hub:middleware-stack').middleware());
     request = supertest(app.callback());
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
     searcher = env.lookup('hub:searchers');
   }
 
@@ -115,7 +103,7 @@ describe('identitymind/middleware', function() {
     // The webhook should only trigger indexing, not wait for it
     expect(scope.isDone()).to.not.be.ok;
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
 
     // the indexing process should be triggered with hints from the webhook, so
     // the indexer should have made the http request by now
@@ -181,24 +169,17 @@ describe('identitymind/middleware', function() {
   });
 
   describe('identitymind/middleware/bcs-pdf', function() {
-    it('returns 401 if there is no user logged in', async function() {
+    it("Downloads the pdf", async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId(null);
-      let response = await request.get(`/identitymind/bcs-pdf`).send();
-      expect(response).hasStatus(401);
-    });
-
-    it("returns 404 if there is a user logged in but they don't have a kyc transaction associated", async function() {
-      expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId('user-without-kyc');
-      let response = await request.get(`/identitymind/bcs-pdf`).send();
-      expect(response).hasStatus(404);
-    });
-
-    it("Downloads the pdf if the user is logged in with a KYC transaction", async function() {
-      expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId('user-with-cached-kyc');
-      let response = await request.get(`/identitymind/bcs-pdf`).send();
+      let data = {
+        name:         "Firstname",
+        surname:      "Lastname",
+        dob:          "1985-01-01",
+        nationality:  "GB",
+        address:      "123 Acacia Avenue, London, England, 90210",
+        country:      "GB",
+      };
+      let response = await request.get(`/identitymind/bcs-pdf`).query(data).send();
 
       expect(response).hasStatus(200);
 

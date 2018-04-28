@@ -53,7 +53,7 @@ describe('identitymind/searcher', function() {
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
-    await env.lookup('hub:indexers').update({ realTime: true });
+    await env.lookup('hub:indexers').update({ forceRefresh: true });
     searcher = env.lookup('hub:searchers');
   }
 
