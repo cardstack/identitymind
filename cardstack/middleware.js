@@ -105,7 +105,7 @@ class IdentityMindMiddleware {
         return;
       }
 
-      await docUpload(kycTransactionId, file, config);
+      await docUpload(kycTransactionId, { file }, config);
 
       ctxt.status = 201;
     });
