@@ -30,8 +30,8 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     assert.dom('.kyc-field').exists({ count: 13 });
   });
 
-  test('postSubmit hook is fired', async function(assert) {
-    assert.expect(1);
+  test('hooks are fired', async function(assert) {
+    assert.expect(2);
 
     this.owner.register('service:cardstack-session', sessionStub);
 
@@ -39,7 +39,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
       assert.ok(true, 'hook is called');
     });
 
-    await render(hbs`{{kyc-form postSubmit=(action doSomething)}}`);
+    await render(hbs`{{kyc-form postSubmit=(action doSomething) willSaveModel=(action doSomething)}}`);
 
     await fillInKycField('bfn');
     await fillInKycField('bln');

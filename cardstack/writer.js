@@ -2,9 +2,10 @@ const PendingChange           = require('@cardstack/plugin-utils/pending-change'
 const { kyc, docUpload }      = require('./im');
 const { declareInjections }   = require('@cardstack/di');
 const Session                 = require('@cardstack/plugin-utils/session');
-const { mapKeys, camelCase }  = require('lodash');
 const parseDataUri            = require('parse-data-uri');
 const mime                    = require('mime-types');
+
+const { mapKeys, camelCase, kebabCase }  = require('lodash');
 
 
 
@@ -56,7 +57,7 @@ class Writer {
         kycResult = await kyc(mappedAttributes, this.config);
       }
 
-      let newAttributes = Object.assign({}, kycResult);
+      let newAttributes = mapKeys(kycResult, (v, k) => kebabCase(k));
 
       let id = newAttributes.tid;
       delete newAttributes.tid;

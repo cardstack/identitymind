@@ -102,7 +102,7 @@ class Pdf {
 
     this.text("Knowingly providing false information on this form constitutes a criminal act", marginLeft, this.doc.y);
     this.text("(Art. 251 of the Swiss Penal Code, forgery may be subject to imprisonment for up to 5 years or a fine).");
-    this.doc.moveDown(6);
+    this.doc.moveDown(4);
     this.text("1 / 1", {width: contentWidth, align: 'center', size: 8});
 
 

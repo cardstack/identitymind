@@ -95,7 +95,7 @@ export default Component.extend({
     if (validations.get('isValid')) {
       model.set('user', this.get('cardstackSession.user'));
       model.set('man', `${model.get('bfn')} ${model.get('bln')}`);
-
+      yield this.get('willSaveModel')(model);
       yield model.save();
 
       yield this.get('cardstackSession.user').reload();

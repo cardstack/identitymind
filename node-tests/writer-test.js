@@ -83,6 +83,8 @@ describe('identitymind/writer', function() {
 
     // stores details from response
     expect(created.attributes.rcd).to.equal('131,101,50005,150,202,1002');
+    // dasherizes keys
+    expect(created.attributes['edna-score-card']).to.be.ok;
   });
 
   it('associates the identitymind request with the user model', async function() {
