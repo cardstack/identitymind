@@ -26,3 +26,19 @@ export function uploadFile(selector) {
 export async function fillInKycField(field) {
   await fillIn(`#kyc-field_${field}`, validInputValues[field]);
 }
+
+export async function fillInRequiredFields() {
+  await fillInKycField('bfn');
+  await fillInKycField('bln');
+  await fillInKycField('tea');
+  await fillInKycField('bsn');
+  await fillInKycField('bz');
+  await fillInKycField('bc');
+  await fillInKycField('bs');
+  await fillInKycField('bco');
+  await fillInKycField('sco');
+  await fillInKycField('dob');
+
+  uploadFile('#kyc-field_scanData');
+  uploadFile('#kyc-field_faceImageData');
+}

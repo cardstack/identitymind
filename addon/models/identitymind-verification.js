@@ -14,7 +14,6 @@ const Validations = buildValidations({
   bc: validator('presence', true),
   bco: validator('presence', true),
   scanData: validator('presence', true),
-  backsideImageData: validator('presence', true),
   faceImageData: validator('presence', true)
 });
 
