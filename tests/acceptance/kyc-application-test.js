@@ -12,7 +12,7 @@ module('Acceptance | content', function(hooks) {
 
     await click('button.submit');
 
-    assert.dom('.field-error').exists({ count: 11 });
+    assert.dom('.field-error').exists({ count: 10 });
 
     await fillInKycField('bfn');
     await fillInKycField('bln');
@@ -24,10 +24,9 @@ module('Acceptance | content', function(hooks) {
 
     await click('button.submit');
 
-    assert.dom('.field-error').exists({ count: 6 });
+    assert.dom('.field-error').exists({ count: 5 });
 
     uploadFile('#kyc-field_scanData');
-    uploadFile('#kyc-field_backsideImageData');
     uploadFile('#kyc-field_faceImageData');
 
     await click('button.submit');
