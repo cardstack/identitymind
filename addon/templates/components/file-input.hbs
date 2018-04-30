@@ -1,9 +1,10 @@
 <div class="form-group-inset">
   <label for="kyc-field_{{field}}" class="{{field}}">
     {{info.name}}
+    {{#if info.required}}<span class="required">*</span>{{/if}}
     <span class="kyc-hint" title={{info.hint}}></span>
   </label>
-  <input type="file" id="kyc-field_{{field}}" disabled={{isDisabled}} onchange={{perform assignFile field}}>
+  <input type="file" accept=".jpeg, .jpg, .png, .pdf" id="kyc-field_{{field}}" disabled={{isDisabled}} onchange={{perform assignFile field}}>
   {{#if showErrorMessage}}
     <div class='field-error'>
       {{get model.validations.attrs (concat field '.message')}}
