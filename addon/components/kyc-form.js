@@ -76,6 +76,7 @@ export default Component.extend({
   classNames: ['kyc-form'],
   store:  service(),
   router: service(),
+  cardstackSession: service(),
 
   layout,
   fields,
@@ -104,13 +105,13 @@ export default Component.extend({
 
       yield model.save();
 
-      this.set('submittingKyc', false);
-
       let postSubmit = this.get('postSubmit');
 
       if (typeof postSubmit === 'function') {
         postSubmit();
       }
+
+      this.set('submittingKyc', false);
     } else {
       let hasErrors = this.get('hasErrors');
 
