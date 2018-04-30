@@ -2,22 +2,9 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import { fillInRequiredFields } from '../helpers/form-helpers';
+import { acceptedCreateResponse } from '../helpers/fixtures';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 import hbs from 'htmlbars-inline-precompile';
-import Service from '@ember/service';
-
-const sessionStub = Service.extend({
-  init() {
-    this._super(...arguments);
-    this.user = {
-      reload: async function() {
-        return new Promise(resolve => {
-          resolve();
-        });
-      }
-    }
-  }
-});
 
 module('Integration | Component | KYC form hooks', function(hooks) {
   setupRenderingTest(hooks);
@@ -33,7 +20,9 @@ module('Integration | Component | KYC form hooks', function(hooks) {
   test('hooks are fired', async function(assert) {
     assert.expect(2);
 
-    this.owner.register('service:cardstack-session', sessionStub);
+    server.post('/identitymind-verifications', () => {
+      return acceptedCreateResponse;
+    });
 
     this.set('doSomething', () => {
       assert.ok(true, 'hook is called');
@@ -42,7 +31,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await render(hbs`{{kyc-form postSubmit=(action doSomething) willSaveModel=(action doSomething)}}`);
 
     await fillInRequiredFields();
-    
+
     await click('button.submit');
   });
 

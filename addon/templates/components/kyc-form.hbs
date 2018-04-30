@@ -1,22 +1,28 @@
 <div class="kyc-form">
-  <legend class="title">Submission Form</legend>
-  <div class="detail required">Indicates required field</div>
-  <fieldset class="form-group">
-    {{#each-in fields as |field info|}}
-      {{text-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning}}
-    {{/each-in}}
-  </fieldset>
-  <fieldset class="form-group">
-    <legend class="title id-icon">Upload Identification</legend>
-    <p class="summary">Please upload a photograph or scanned image of a
-      state-issued driver’s license, passport, or identity card. Make sure your
-      image is clear and detailed; low-quality images will be rejected.</p>
-    <div class="summary file-icon"><a href="/assets/media/doc-capture-best-practices.pdf" target="_blank">
-      Document Capture Best Practices</a></div>
-    {{#each-in docUploadFields as |field info|}}
-      {{file-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning assignFile=assignFile}}
-    {{/each-in}}
-  </fieldset>
-  <button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}
-  class="button submit dark">Submit Application</button>
+  {{#unless submittingKyc}}
+    <legend class="title">Submission Form</legend>
+    <div class="detail required">Indicates required field</div>
+    <fieldset class="form-group">
+      {{#each-in fields as |field info|}}
+        {{text-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning}}
+      {{/each-in}}
+    </fieldset>
+    <fieldset class="form-group">
+      <legend class="title id-icon">Upload Identification</legend>
+      <p class="summary">Please upload a photograph or scanned image of a
+        state-issued driver’s license, passport, or identity card. Make sure your
+        image is clear and detailed; low-quality images will be rejected.</p>
+      <div class="summary file-icon"><a href="/assets/media/doc-capture-best-practices.pdf" target="_blank">
+        Document Capture Best Practices</a></div>
+      {{#each-in docUploadFields as |field info|}}
+        {{file-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning assignFile=assignFile}}
+      {{/each-in}}
+    </fieldset>
+    <button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}
+    class="button submit dark">Submit Application</button>
+  {{else}}
+    <div class="kyc-processing">
+      Waiting for response from IdentityMind...
+    </div>
+  {{/unless}}
 </div>
