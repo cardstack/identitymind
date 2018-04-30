@@ -22,7 +22,7 @@
     class="button submit dark">Submit Application</button>
   {{else}}
     <div class="kyc-processing">
-      Waiting for response from IdentityMind...
+      {{yield}}
     </div>
   {{/unless}}
 </div>
