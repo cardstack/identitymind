@@ -1,10 +1,13 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { click, currentURL, visit } from '@ember/test-helpers';
-import { fillInKycField, uploadFile } from '../helpers/form-helpers';
+import { click, currentURL, visit, waitUntil, waitFor } from '@ember/test-helpers';
+import { fillInKycField, uploadFile, fillInRequiredFields } from '../helpers/form-helpers';
+import { acceptedCreateResponse } from '../helpers/fixtures';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-module('Acceptance | content', function(hooks) {
+module('Acceptance | KYC Application', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   test('validates the form fields', async function(assert) {
     await visit('/kyc');
@@ -34,4 +37,22 @@ module('Acceptance | content', function(hooks) {
     assert.dom('.field-error').exists({ count: 3 });
   });
 
+  test('show a spinner while waiting for response', async function(assert) {
+    server.post('/identitymind-verifications', () => {
+      return acceptedCreateResponse;
+    });
+
+    await visit('/kyc');
+    assert.equal(currentURL(), '/kyc');
+
+    await fillInRequiredFields();
+
+    let submitPromise = click('button.submit');
+
+    await waitFor('.kyc-processing');
+
+    await submitPromise;
+
+    await waitUntil(() => currentURL() === '/');
+  });
 });

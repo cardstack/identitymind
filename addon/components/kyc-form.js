@@ -76,7 +76,6 @@ export default Component.extend({
   classNames: ['kyc-form'],
   store:  service(),
   router: service(),
-  cardstackSession: service(),
 
   layout,
   fields,
@@ -93,12 +92,19 @@ export default Component.extend({
     this.set('didValidate', true);
 
     if (validations.get('isValid')) {
+      this.set('submittingKyc', true);
+
       model.set('user', this.get('cardstackSession.user'));
       model.set('man', `${model.get('bfn')} ${model.get('bln')}`);
-      yield this.get('willSaveModel')(model);
+      let willSaveModel = this.get('willSaveModel');
+
+      if (typeof willSaveModel === 'function') {
+        yield willSaveModel(model);
+      }
+
       yield model.save();
 
-      yield this.get('cardstackSession.user').reload();
+      this.set('submittingKyc', false);
 
       let postSubmit = this.get('postSubmit');
 
