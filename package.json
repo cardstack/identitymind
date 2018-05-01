@@ -1,6 +1,6 @@
 {
   "name": "@cardstack/identitymind",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "IdentityMind data source plugin for @cardstack/hub.",
   "repository": "https://github.com/cardstack/identitymind",
   "author": "Alex Speller <alex@alexspeller.com>",
@@ -56,6 +56,7 @@
     "@cardstack/di": "^0.6.8",
     "@cardstack/logger": "^0.1.0",
     "@cardstack/plugin-utils": "^0.6.8",
+    "ajax": "^0.0.4",
     "async-busboy": "^0.6.2",
     "chai-moment": "^0.1.0",
     "datauri": "^1.1.0",

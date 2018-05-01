@@ -4,13 +4,16 @@ const jsonBody                = require('koa-json-body')({ limit: '500kb' });
 const compose                 = require('koa-compose');
 const { docUpload }           = require('./im');
 const asyncBusboy             = require('async-busboy');
-let Pdf                       = require('./pdf');
+const Pdf                     = require('./pdf');
+const Session                 = require('@cardstack/plugin-utils/session');
+
 
 
 module.exports = declareInjections({
   indexer:  'hub:indexers',
   sources:  'hub:data-sources',
-  searcher: 'hub:searchers'
+  searcher: 'hub:searchers',
+  writer:   'hub:writers'
 },
 
 class IdentityMindMiddleware {
@@ -22,7 +25,8 @@ class IdentityMindMiddleware {
     return compose([
       this._webhookMiddleware(),
       this._pdfMiddleware(),
-      this._fileUploadMiddleware()
+      this._fileUploadMiddleware(),
+      this._fileUploadPreFlight()
     ]);
   }
 
@@ -55,6 +59,8 @@ class IdentityMindMiddleware {
       ctxt.status = 200;
       ctxt.body = pdf.toStream();
       ctxt.type = 'pdf';
+      let filename = `FormA-${ctxt.request.query.name}${ctxt.request.query.surname}.pdf`;
+      ctxt.response.set('Content-Disposition', `attachment; filename="${filename}"`);
     });
   }
 
@@ -89,7 +95,21 @@ class IdentityMindMiddleware {
 
       await docUpload(kycTransactionId, { file }, config);
 
+      user.data.attributes[config.formAField] = 'PENDING';
+
+      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, user.data.type, user.data.id, user.data);
+      await this.indexer.update({ forceRefresh: true });
+
+      addCorsHeaders(ctxt.response);
+      ctxt.body = {status: "uploaded"};
       ctxt.status = 201;
+    });
+  }
+
+  _fileUploadPreFlight() {
+    return route.options('/identitymind/document-uploads',  async (ctxt) => {
+      addCorsHeaders(ctxt.response);
+      ctxt.status = 200;
     });
   }
 
@@ -103,10 +123,13 @@ class IdentityMindMiddleware {
     }
 
     let { payload } = cardstackSession;
+    let searcher = cardstackSession.userSearcher.get || cardstackSession.userSearcher;
 
-    let user = await cardstackSession.userSearcher(payload.type, payload.id);
+    let user = await searcher(payload.type, payload.id);
 
-    let kycTransactionId = user.data.attributes['kyc-transaction'];
+    let config = await this.pluginConfig();
+
+    let kycTransactionId = user.data.attributes[config.kycField];
 
     if (!kycTransactionId) {
       ctxt.status = 404;
@@ -121,4 +144,10 @@ class IdentityMindMiddleware {
 
 function errorThrower(err) {
   if (err) { throw err; }
+}
+
+function addCorsHeaders(response) {
+  response.set('Access-Control-Allow-Origin', '*');
+  response.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  response.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 }
