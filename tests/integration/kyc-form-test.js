@@ -45,4 +45,17 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await render(hbs`{{kyc-form hasErrors=(action doSomething)}}`);
     await click('button.submit');
   });
+
+  test('pre-populate name and email fields if user is passed in', async function(assert) {
+    this.set('user', {
+      fullLegalName: 'Bill Wagby',
+      email: 'bill@wagby.net'
+    });
+
+    await render(hbs`{{kyc-form user=user}}`);
+
+    assert.dom('#kyc-field_bfn').hasValue('Bill', 'first name is correct');
+    assert.dom('#kyc-field_bln').hasValue('Wagby', 'last name is correct');
+    assert.dom('#kyc-field_tea').hasValue('bill@wagby.net', 'email is correct');
+  });
 });

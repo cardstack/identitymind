@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 import { task } from 'ember-concurrency';
 import layout from '../templates/components/kyc-form';
 import { Promise } from "rsvp";
@@ -147,6 +148,16 @@ export default Component.extend({
 
   init() {
     this.model = this.get('store').createRecord('identitymind-verification');
+    let user = this.get('user');
+
+    if (user) {
+      this.model.setProperties({
+        bfn: get(user, 'fullLegalName').split(' ')[0],
+        bln: get(user, 'fullLegalName').split(' ')[1] || '',
+        tea: get(user, 'email')
+      })
+    }
+
     this._super(...arguments);
   }
 });
