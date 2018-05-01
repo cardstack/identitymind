@@ -213,6 +213,7 @@ describe('identitymind/writer', function() {
       nock('https://test.identitymind.com')
         .post('/im/account/consumer', body =>
           body.stage === 2 &&
+          body.tid === "92514582" &&
           dataUriFileText(body.scanData).includes("scan") &&
           dataUriFileText(body.backsideImageData).includes("backside") &&
           dataUriFileText(body.faceImageData).includes("face")
@@ -352,6 +353,7 @@ describe('identitymind/writer', function() {
       nock('https://test.identitymind.com')
         .post('/im/account/consumer', body =>
           body.stage === 2 &&
+          body.tid === "92514582" &&
           dataUriFileText(body.scanData).includes("scan") &&
           dataUriFileText(body.backsideImageData).includes("backside") &&
           dataUriFileText(body.faceImageData).includes("face")

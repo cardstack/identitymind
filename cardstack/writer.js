@@ -52,6 +52,7 @@ class Writer {
         mappedAttributes.scanData           = scanData;
         mappedAttributes.backsideImageData  = backsideImageData;
         mappedAttributes.faceImageData      = faceImageData;
+        mappedAttributes.tid                = kycResult.tid;
         mappedAttributes.stage              = 2;
 
         kycResult = await kyc(mappedAttributes, this.config);
