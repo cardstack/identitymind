@@ -59,6 +59,8 @@ class IdentityMindMiddleware {
       ctxt.status = 200;
       ctxt.body = pdf.toStream();
       ctxt.type = 'pdf';
+      let filename = `FormA-${ctxt.request.query.name}${ctxt.request.query.surname}.pdf`;
+      ctxt.response.set('Content-Disposition', `attachment; filename="${filename}"`);
     });
   }
 
