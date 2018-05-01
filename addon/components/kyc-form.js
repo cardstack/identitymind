@@ -10,38 +10,45 @@ const { testing } = Ember;
 const fields = {
   bfn: {
     name: "First Name",
-    hint: "User's First Name"
+    hint: "User's first name",
+    required: true
   },
   bln: {
     name: "Last Name",
-    hint: "User's Last Name"
+    hint: "User's last name",
+    required: true
   },
   tea: {
     name: "Email Address",
-    hint: "Email address of user",
-    type: "email"
+    hint: "User's email address",
+    type: "email",
+    required: true
   },
   dob: {
     name: "Date of Birth",
     hint: "User's date of birth",
-    type: "date"
+    type: "date",
+    required: true
   },
   sco: {
     name: "Country of Citizenship",
-    hint: "Country of which User is a citizen",
-    type: 'country'
+    hint: "Country of which user is a citizen",
+    type: 'country',
+    required: true
   },
   bsn: {
     name: "Address",
-    hint: "User's street address, including house number, street name, and apartment number"
+    hint: "User's street address, including house number, street name, and apartment number",
+    required: true
   },
   bz: {
     name: "Zip Code",
-    hint: "User's Zip Code"
+    hint: "User's zip code"
   },
   bc: {
     name: "City",
-    hint: "User's City"
+    hint: "User's city",
+    required: true
   },
   bs: {
     name: "State / Province",
@@ -50,7 +57,8 @@ const fields = {
   bco: {
     name: "Country",
     hint: "User's current country of residence",
-    type: 'country'
+    type: 'country',
+    required: true
   }
 };
 
@@ -58,7 +66,8 @@ const docUploadFields = {
   scanData: {
     name: 'Document Scan Front',
     hint: "Scan of front side of identity document",
-    type: "file"
+    type: "file",
+    required: true
   },
   backsideImageData: {
     name: "Document Scan Back",
@@ -68,7 +77,8 @@ const docUploadFields = {
   faceImageData: {
     name: "Face Image",
     hint: "Picture of user's face with identity document in frame",
-    type: "file"
+    type: "file",
+    required: true
   }
 };
 

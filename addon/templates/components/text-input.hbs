@@ -1,5 +1,6 @@
 <label for="kyc-field_{{field}}" class="{{field}}">
   {{info.name}}
+  {{#if info.required}}<span class="required">*</span>{{/if}}
   <span class="kyc-hint" title={{info.hint}}></span>
 </label>
 {{#if (eq info.type 'country')}}

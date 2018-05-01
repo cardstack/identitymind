@@ -14,6 +14,7 @@
         image is clear and detailed; low-quality images will be rejected.</p>
       <div class="summary file-icon"><a href="/assets/media/doc-capture-best-practices.pdf" target="_blank">
         Document Capture Best Practices</a></div>
+      <div class="detail">Accepted file formats: <span class="formats">JPG, PNG, PDF</span></div>
       {{#each-in docUploadFields as |field info|}}
         {{file-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning assignFile=assignFile}}
       {{/each-in}}
