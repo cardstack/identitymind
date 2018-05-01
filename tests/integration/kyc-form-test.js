@@ -47,12 +47,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
   });
 
   test('pre-populate name and email fields if user is passed in', async function(assert) {
-    this.set('user', {
-      fullLegalName: 'Bill Wagby',
-      email: 'bill@wagby.net'
-    });
-
-    await render(hbs`{{kyc-form user=user}}`);
+    await render(hbs`{{kyc-form defaultFirstName='Bill' defaultLastName='Wagby' defaultEmail='bill@wagby.net'}}`);
 
     assert.dom('#kyc-field_bfn').hasValue('Bill', 'first name is correct');
     assert.dom('#kyc-field_bln').hasValue('Wagby', 'last name is correct');
