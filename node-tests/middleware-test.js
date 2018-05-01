@@ -32,8 +32,8 @@ describe('identitymind/middleware', function() {
             pass:       'testpass',
             env:        'test',
             userModel:  'users',
-            kycField:   'kyc-transaction'
-
+            kycField:   'kyc-transaction',
+            formAField: 'form-a-status'
           }
         }
       });
@@ -41,11 +41,15 @@ describe('identitymind/middleware', function() {
     factory.addResource('content-types', 'users').withRelated('fields', [
       factory.addResource('fields', 'kyc-transaction').withAttributes({
         fieldType: '@cardstack/core-types::string'
-      })
+      }),
+      factory.addResource('fields', 'form-a-status').withAttributes({
+        fieldType: '@cardstack/core-types::string'
+      }),
     ]);
 
     factory.addResource('users', 'user-with-kyc').withAttributes({
-      'kyc-transaction': '92514582'
+      'kyc-transaction': '92514582',
+      'form-a-status': 'INITIAL'
     });
 
     factory.addResource('users', 'user-with-cached-kyc').withAttributes({
@@ -165,6 +169,10 @@ describe('identitymind/middleware', function() {
         .attach('file', passportPath);
 
       expect(response).hasStatus(201);
+
+      let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc')).data;
+
+      expect(user.attributes['form-a-status']).to.equal("PENDING");
     });
   });
 
