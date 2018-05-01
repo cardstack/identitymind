@@ -1,6 +1,6 @@
 {
   "name": "@cardstack/identitymind",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "IdentityMind data source plugin for @cardstack/hub.",
   "repository": "https://github.com/cardstack/identitymind",
   "author": "Alex Speller <alex@alexspeller.com>",
