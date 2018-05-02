@@ -8,7 +8,10 @@ const Validations = buildValidations({
   bln: validator('presence', true),
   tea: [
     validator('presence', true),
-    validator('format', { type: 'email' })
+    validator('format', {
+      type: 'email',
+      debounce: 500
+   })
   ],
   dob: validator('presence', true),
   sco: validator('presence', true),
