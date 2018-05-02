@@ -95,6 +95,10 @@ export default Component.extend({
   postSubmit: null,
   hasErrors: null,
 
+  defaultFirstName: '',
+  defaultLastName: '',
+  defaultEmail: '',
+
   submitKyc: task(function * () {
     let model = this.get('model');
 
@@ -147,6 +151,13 @@ export default Component.extend({
 
   init() {
     this.model = this.get('store').createRecord('identitymind-verification');
+
+    this.model.setProperties({
+      bfn: this.get('defaultFirstName'),
+      bln: this.get('defaultLastName'),
+      tea: this.get('defaultEmail')
+    })
+
     this._super(...arguments);
   }
 });
