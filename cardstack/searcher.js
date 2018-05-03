@@ -69,7 +69,7 @@ class IdentitymindSearcher {
   }
 
   async reindexThenSearchAgain(session, branch, id) {
-    await this.indexer.update({ hints: [{ type: "identitymind-verifications", id }] });
+    await this.indexer.update({ hints: [{ type: "identitymind-verifications", id, source: 'searcher' }] }, { forceRefresh: true });
     return await this.searcher.get(session, branch, 'identitymind-verifications', id);
   }
 

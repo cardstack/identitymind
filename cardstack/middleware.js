@@ -7,8 +7,6 @@ const asyncBusboy             = require('async-busboy');
 const Pdf                     = require('./pdf');
 const Session                 = require('@cardstack/plugin-utils/session');
 
-
-
 module.exports = declareInjections({
   indexer:  'hub:indexers',
   sources:  'hub:data-sources',
@@ -47,7 +45,7 @@ class IdentityMindMiddleware {
       }
 
       // Lookup the verification that is posted to refresh it from the api
-      this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid }] });
+      this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid, source: 'webhook' }] });
 
       ctxt.status = 200;
     });

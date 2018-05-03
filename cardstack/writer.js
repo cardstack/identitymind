@@ -4,6 +4,7 @@ const { declareInjections }   = require('@cardstack/di');
 const Session                 = require('@cardstack/plugin-utils/session');
 const parseDataUri            = require('parse-data-uri');
 const mime                    = require('mime-types');
+const moment                  = require('moment');
 
 const { mapKeys, camelCase, kebabCase }  = require('lodash');
 
@@ -60,6 +61,8 @@ class Writer {
 
       let id = newAttributes.tid;
       delete newAttributes.tid;
+
+      newAttributes['last-checked-at'] = moment().format();
 
       this._uploadDataUriFile(scanData, "Scan Data", id);
       this._uploadDataUriFile(faceImageData, "Face Image Data", id);

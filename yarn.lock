@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@cardstack/authentication@^0.7.0":
+"@cardstack/authentication@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/authentication/-/authentication-0.7.1.tgz#3cb793f0952c85b3d4d5aaf024e7838d0a3514c3"
   dependencies:
@@ -78,7 +78,7 @@
   dependencies:
     handlebars "^4.0.6"
 
-"@cardstack/hub@0.7.1", "@cardstack/hub@^0.7.0":
+"@cardstack/hub@0.7.1", "@cardstack/hub@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/hub/-/hub-0.7.1.tgz#b525692c37e2721712b8db687292c76d0e018e1f"
   dependencies:
@@ -110,13 +110,24 @@
     tar-fs "^1.16.0"
     tar-stream "^1.5.4"
 
+"@cardstack/jsonapi@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@cardstack/jsonapi/-/jsonapi-0.7.1.tgz#f3d3cad510f207c94f702a3f30b68f5aa8704e22"
+  dependencies:
+    "@cardstack/di" "0.6.14"
+    "@cardstack/logger" "^0.1.0"
+    "@cardstack/plugin-utils" "0.7.0"
+    koa-json-body "^5.3.0"
+    lodash "^4.17.4"
+    qs "^6.4.0"
+
 "@cardstack/logger@^0.1.0":
   version "0.1.0"
   resolved "https://codeload.github.com/cardstack/logger/tar.gz/87a97a29039c4579139efb76f4e97c3155086ea1"
   dependencies:
     ms "2.0.0"
 
-"@cardstack/models@^0.7.0":
+"@cardstack/models@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/models/-/models-0.7.1.tgz#cbcf861a2b68c45e0e6c815e211d7efbe327da23"
   dependencies:
@@ -153,14 +164,14 @@
     ember-overlays "^1.0.2"
     ember-truth-helpers "^2.0.0"
 
-"@cardstack/test-support-authenticator@^0.7.0":
+"@cardstack/test-support-authenticator@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/test-support-authenticator/-/test-support-authenticator-0.7.1.tgz#df67b239394c8cb3bc81b5d5d1bb5def2756cdeb"
   dependencies:
     "@cardstack/di" "0.6.14"
     "@cardstack/plugin-utils" "0.7.0"
 
-"@cardstack/test-support@^0.7.0":
+"@cardstack/test-support@^0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/test-support/-/test-support-0.7.1.tgz#37e57e23c317e26d9c3a213a7055b227c6a6019b"
   dependencies:
