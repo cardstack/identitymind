@@ -132,16 +132,21 @@ export default Component.extend({
 
   assignFile: task(function * (field, event) {
     let file = testing ? event.detail.testingFiles[0] : event.target.files[0];
-    let reader  = new FileReader();
+    
+    this.set(`model.${field}FileSize`, file.size);
 
-    let dataUri = yield new Promise(resolve => {
-      reader.addEventListener("load", function () {
-        resolve(reader.result);
-      }, false);
-      reader.readAsDataURL(file);
-    })
+    if (this.get(`model.validations.attrs.${field}.isValid`)) {
+      let reader  = new FileReader();
 
-    this.set(`model.${field}`, dataUri);
+      let dataUri = yield new Promise(resolve => {
+        reader.addEventListener("load", function () {
+          resolve(reader.result);
+        }, false);
+        reader.readAsDataURL(file);
+      })
+
+      this.set(`model.${field}`, dataUri);
+    }
   }),
 
   init() {
