@@ -13,6 +13,8 @@ module('Acceptance | KYC Application', function(hooks) {
     await visit('/kyc');
     assert.equal(currentURL(), '/kyc');
 
+    assert.dom('.kyc-field').exists({ count: 12 });
+
     await click('button.submit');
 
     assert.dom('.field-error').exists({ count: 10 });

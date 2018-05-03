@@ -60,7 +60,7 @@ class Updater {
 
     ['man', 'bfn', 'bln', 'bco', 'sco', 'tea', 'dob', 'bsn', 'bz', 'bc', 'bs',
     'upr', 'frn', 'frp', 'frd', 'mtid', 'state', 'erd', 'arpr', 'res', 'rcd',
-    'scan-data', 'face-image-data', 'backside-image-data']
+    'scan-data', 'face-image-data']
       .forEach(f => addField(f));
 
     addField('edna-score-card', '@cardstack/core-types::object');

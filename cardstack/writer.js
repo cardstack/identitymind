@@ -34,10 +34,9 @@ class Writer {
       let mappedAttributes = mapKeys(attributes, (v, k) => camelCase(k));
       mappedAttributes.stage = 1;
 
-      let { scanData, backsideImageData, faceImageData } = mappedAttributes;
+      let { scanData, faceImageData } = mappedAttributes;
 
       delete mappedAttributes.scanData;
-      delete mappedAttributes.backsideImageData;
       delete mappedAttributes.faceImageData;
 
       let kycResult = await kyc(mappedAttributes, this.config);
@@ -50,7 +49,6 @@ class Writer {
       {
         // for manual review, we need to resubmit with the base64 data included
         mappedAttributes.scanData           = scanData;
-        mappedAttributes.backsideImageData  = backsideImageData;
         mappedAttributes.faceImageData      = faceImageData;
         mappedAttributes.tid                = kycResult.tid;
         mappedAttributes.stage              = 2;
@@ -64,7 +62,6 @@ class Writer {
       delete newAttributes.tid;
 
       this._uploadDataUriFile(scanData, "Scan Data", id);
-      this._uploadDataUriFile(backsideImageData, "Backside Image Data", id);
       this._uploadDataUriFile(faceImageData, "Face Image Data", id);
 
 

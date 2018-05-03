@@ -14,7 +14,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await render(hbs`{{kyc-form}}`);
 
     assert.dom('legend').hasText('Submission Form');
-    assert.dom('.kyc-field').exists({ count: 13 });
+    assert.dom('.kyc-field').exists({ count: 12 });
   });
 
   test('hooks are fired', async function(assert) {

@@ -64,15 +64,10 @@ const fields = {
 
 const docUploadFields = {
   scanData: {
-    name: 'Document Scan Front',
-    hint: "Scan of front side of identity document",
+    name: 'Passport Scan',
+    hint: "Scan of state-issued passport",
     type: "file",
     required: true
-  },
-  backsideImageData: {
-    name: "Document Scan Back",
-    hint: "Scan of back side of identity document",
-    type: "file"
   },
   faceImageData: {
     name: "Face Image",
