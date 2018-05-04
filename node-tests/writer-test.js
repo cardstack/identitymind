@@ -7,7 +7,6 @@ const sampleResponse  = require('./fixtures/kyc-create.js');
 const nock            = require('nock');
 const matches         = require('lodash.matches');
 const DataURI         = require('datauri');
-const parseDataUri    = require('parse-data-uri');
 const supertest       = require('supertest');
 const Koa             = require('koa');
 const moment          = require('moment');
@@ -301,16 +300,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
-      nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body =>
-          body.stage === 2 &&
-          body.tid === "92514582" &&
-          dataUriFileText(body.scanData).includes("scan") &&
-          dataUriFileText(body.faceImageData).includes("face")
-        )
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200, imResponse("MANUAL_REVIEW"));
-
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
@@ -422,15 +411,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
-      nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body =>
-          body.stage === 2 &&
-          body.tid === "92514582" &&
-          dataUriFileText(body.scanData).includes("scan") &&
-          dataUriFileText(body.faceImageData).includes("face")
-        )
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200, imResponse("ACCEPT"));
 
       let session = sessions.create('users', 'create-only');
 
@@ -459,8 +439,4 @@ function dataUriText(text) {
   let datauri = new DataURI();
   datauri.format('.txt', text);
   return datauri.content;
-}
-
-function dataUriFileText(dataUri) {
-  return parseDataUri(dataUri).data;
 }
