@@ -8,10 +8,13 @@ const nock            = require('nock');
 const matches         = require('lodash.matches');
 const DataURI         = require('datauri');
 const parseDataUri    = require('parse-data-uri');
+const supertest       = require('supertest');
+const Koa             = require('koa');
+const moment          = require('moment');
 
 
 describe('identitymind/writer', function() {
-  let env, writer, searcher, sessions;
+  let env, writer, searcher, sessions, request;
 
   beforeEach(async function() {
     let factory = new JSONAPIFactory();
@@ -45,6 +48,10 @@ describe('identitymind/writer', function() {
     writer = env.lookup('hub:writers');
     searcher = env.lookup('hub:searchers');
     sessions = env.lookup('hub:sessions');
+
+    let app = new Koa();
+    app.use(env.lookup('hub:middleware-stack').middleware());
+    request = supertest(app.callback());
   });
 
   afterEach(async function() {
@@ -85,6 +92,11 @@ describe('identitymind/writer', function() {
     expect(created.attributes.rcd).to.equal('131,101,50005,150,202,1002');
     // dasherizes keys
     expect(created.attributes['edna-score-card']).to.be.ok;
+
+    let lastChecked = created.attributes['last-checked-at'];
+    expect(lastChecked).to.be.ok;
+    expect(lastChecked).to.be.afterMoment(moment().subtract(2, 'seconds'));
+    expect(lastChecked).to.be.beforeMoment(moment());
   });
 
   it('associates the identitymind request with the user model', async function() {
@@ -182,6 +194,96 @@ describe('identitymind/writer', function() {
       });
 
     });
+
+    it("It does the correct amount of requests when requesting via the api", async function() {
+      await env.setUser('users', 'create-only');
+
+      nock('https://test.identitymind.com')
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.backsideImageData && !body.faceImageData)
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200, imResponse("ACCEPT"));
+
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+
+      let doc = {
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
+            }
+          }
+        }
+      };
+
+      let response = await request.post(`/api/identitymind-verifications`).send(doc);
+      expect(response).hasStatus(201);
+    });
+
+    it("Allows uploading large files", async function() {
+      await env.setUser('users', 'create-only');
+
+      nock('https://test.identitymind.com')
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.backsideImageData && !body.faceImageData)
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200, imResponse("ACCEPT"));
+
+
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("aaaaaaaaaaa"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("cccccccccccc"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+
+      let fourMegsOf = (c) => c.repeat(4 * 1000 * 1000);
+
+      let doc = {
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText(fourMegsOf("a")),
+            "face-image-data":      dataUriText(fourMegsOf("c"))
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
+            }
+          }
+        }
+      };
+
+      let response = await request.post(`/api/identitymind-verifications`).send(doc);
+      expect(response.status).to.equal(201);
+    });
+
 
     it("handles submission when the initial result without image data is marked for review", async function() {
       nock('https://test.identitymind.com')

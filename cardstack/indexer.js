@@ -110,7 +110,7 @@ class Updater {
     if (hints) {
 
       for(let hint of hints) {
-        if (hint.type === 'identitymind-verifications') {
+        if (hint.type === 'identitymind-verifications' && hint.source) {
           let data = await this._getVerification(hint.id);
           await ops.save('identitymind-verifications', hint.id, data);
         }

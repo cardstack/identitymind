@@ -63,13 +63,13 @@ describe('identitymind/indexer', function() {
     await env.lookup('hub:indexers').update({ forceRefresh: true });
   });
 
-  it("Looks up a transaction when asked to do so with hints", async function() {
+  it("Looks up a transaction when asked to do so with hints with a source", async function() {
     nock('https://test.identitymind.com')
       .get("/im/account/consumer/92514582")
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
 
-    await env.lookup('hub:indexers').update({ forceRefresh: true, hints: [{type: 'identitymind-verifications', id: "92514582"}] });
+    await env.lookup('hub:indexers').update({ forceRefresh: true, hints: [{type: 'identitymind-verifications', id: "92514582", source: 'tests'}] });
     let model = (await searcher.get(Session.INTERNAL_PRIVILEGED, 'master', 'identitymind-verifications', '92514582')).data;
     expect(model.attributes.state).to.equal('A');
 
@@ -82,5 +82,9 @@ describe('identitymind/indexer', function() {
     expect(lastChecked).to.be.beforeMoment(moment());
   });
 
+  it("Doesn't index a transaction when asked to do so with hints without a source", async function() {
+    expect(nock.isActive()).to.be.true; // will error if http request is attempted
+    await env.lookup('hub:indexers').update({ forceRefresh: true, hints: [{type: 'identitymind-verifications', id: "92514582"}] });
+  });
 });
 
