@@ -42,21 +42,6 @@ class Writer {
 
       let kycResult = await kyc(mappedAttributes, this.config);
 
-      if (kycResult.res === "MANUAL_REVIEW" || (
-            kycResult.res == "DENY" &&
-            !['Sanctions', 'Blacklist'].includes(kycResult.ednaScoreCard.er.reportedRule.name)
-          )
-        )
-      {
-        // for manual review, we need to resubmit with the base64 data included
-        mappedAttributes.scanData           = scanData;
-        mappedAttributes.faceImageData      = faceImageData;
-        mappedAttributes.tid                = kycResult.tid;
-        mappedAttributes.stage              = 2;
-
-        kycResult = await kyc(mappedAttributes, this.config);
-      }
-
       let newAttributes = mapKeys(kycResult, (v, k) => kebabCase(k));
 
       let id = newAttributes.tid;
@@ -66,7 +51,6 @@ class Writer {
 
       this._uploadDataUriFile(scanData, "Scan Data", id);
       this._uploadDataUriFile(faceImageData, "Face Image Data", id);
-
 
       let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
       userData.attributes[this.config.kycField] = id;
