@@ -12,7 +12,7 @@ describe('identitymind/searcher', function() {
   let env, searcher;
 
   function session(userId) {
-    return new Session({type: 'users', id: userId});
+    return env.lookup('hub:sessions').create('users', userId);
   }
 
   async function setup(fn) {

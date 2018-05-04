@@ -16,10 +16,10 @@ module.exports = [
     },
     relationships: {
       who: {
-        data: {
+        data: [{
           type: 'groups',
           id: 'everyone'
-        }
+        }]
       }
     }
   }

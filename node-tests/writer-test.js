@@ -3,7 +3,6 @@ const {
   destroyDefaultEnvironment
 } = require('@cardstack/test-support/env');
 const JSONAPIFactory  = require('@cardstack/test-support/jsonapi-factory');
-const Session         = require('@cardstack/plugin-utils/session');
 const sampleResponse  = require('./fixtures/kyc-create.js');
 const nock            = require('nock');
 const matches         = require('lodash.matches');
@@ -12,7 +11,7 @@ const parseDataUri    = require('parse-data-uri');
 
 
 describe('identitymind/writer', function() {
-  let env, writer, searcher;
+  let env, writer, searcher, sessions;
 
   beforeEach(async function() {
     let factory = new JSONAPIFactory();
@@ -45,6 +44,7 @@ describe('identitymind/writer', function() {
 
     writer = env.lookup('hub:writers');
     searcher = env.lookup('hub:searchers');
+    sessions = env.lookup('hub:sessions');
   });
 
   afterEach(async function() {
@@ -60,7 +60,7 @@ describe('identitymind/writer', function() {
       .reply(200, sampleResponse);
 
 
-    let created = await writer.create('master', new Session({ id: 'create-only', type: 'users'}), 'identitymind-verifications', {
+    let created = await writer.create('master', sessions.create('users', 'create-only'), 'identitymind-verifications', {
       type: 'identitymind-verifications',
       attributes: {
         man:          'test@example.com'
@@ -94,7 +94,7 @@ describe('identitymind/writer', function() {
       .reply(200, sampleResponse);
 
 
-    let session = new Session({ id: 'create-only', type: 'users'});
+    let session = sessions.create('users', 'create-only');
 
     await writer.create('master', session, 'identitymind-verifications', {
       type: 'identitymind-verifications',
@@ -162,7 +162,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
-      let session = new Session({ id: 'create-only', type: 'users'});
+      let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
         type: 'identitymind-verifications',
@@ -209,7 +209,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("MANUAL_REVIEW"));
 
-      let session = new Session({ id: 'create-only', type: 'users'});
+      let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
         type: 'identitymind-verifications',
@@ -246,7 +246,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
-      let session = new Session({ id: 'create-only', type: 'users'});
+      let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
         type: 'identitymind-verifications',
@@ -283,7 +283,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
-      let session = new Session({ id: 'create-only', type: 'users'});
+      let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
         type: 'identitymind-verifications',
@@ -330,7 +330,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
-      let session = new Session({ id: 'create-only', type: 'users'});
+      let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
         type: 'identitymind-verifications',
