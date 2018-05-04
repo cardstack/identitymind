@@ -127,28 +127,28 @@ describe('identitymind/middleware', function() {
   describe('identitymind/middleware/document-upload', function() {
     it('returns 401 if there is no user logged in', async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId(null);
+      await env.setUser(null);
       let response = await request.post(`/identitymind/document-uploads`).send();
       expect(response).hasStatus(401);
     });
 
     it("returns 404 if there is a user logged in but they don't have a kyc transaction associated", async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId('user-without-kyc');
+      await env.setUser('users', 'user-without-kyc');
       let response = await request.post(`/identitymind/document-uploads`).send();
       expect(response).hasStatus(404);
     });
 
     it("Returns 400 if there is a user logged in but they don't attach a file", async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId('user-with-kyc');
+      await env.setUser('users', 'user-with-kyc');
       let response = await request.post(`/identitymind/document-uploads`).send();
       expect(response).hasStatus(400);
     });
 
     it("Returns 400 if they user is logged in and they attach a file with the wrong key", async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
-      await env.setUserId('user-with-kyc');
+      await env.setUser('users', 'user-with-kyc');
       let passportPath = resolve('./node-tests/fixtures/passport.jpg');
       let response = await request.post(`/identitymind/document-uploads`)
         .attach('somebadkey', passportPath);
@@ -157,7 +157,7 @@ describe('identitymind/middleware', function() {
     });
 
     it("Uploads the document if there is a user logged in with a kyc transaction and they send a file", async function() {
-      await env.setUserId('user-with-kyc');
+      await env.setUser('users', 'user-with-kyc');
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.length > 10000)

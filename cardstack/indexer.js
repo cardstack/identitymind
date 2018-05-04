@@ -83,7 +83,7 @@ class Updater {
             data: [{type: 'content-types', id: 'identitymind-verifications'}]
           },
           who: {
-            data: who
+            data: [who]
           }
         }
       };
