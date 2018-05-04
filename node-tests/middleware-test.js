@@ -138,9 +138,6 @@ Cardstack team
     let response = await request.post(`/identitymind/consumer-callback`).send(sampleWebhook);
     expect(response).hasStatus(200);
 
-    // The webhook should only trigger indexing, not wait for it
-    expect(scope.isDone()).to.not.be.ok;
-
     await env.lookup('hub:indexers').update({ forceRefresh: true });
 
     // the indexing process should be triggered with hints from the webhook, so
