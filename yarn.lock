@@ -141,6 +141,18 @@
     handlebars "^4.0.6"
     inflection "^1.12.0"
 
+"@cardstack/plugin-utils@0.6.14":
+  version "0.6.14"
+  resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.6.14.tgz#4e1237b827770f0bc12670ef9fc900ac00c8988b"
+  dependencies:
+    "@cardstack/di" "0.6.14"
+    broccoli-plugin "^1.3.0"
+    ember-cli-babel "^6.8.2"
+    handlebars "^4.0.6"
+    ms "2.0.0"
+    superagent "^3.8.1"
+    symlink-or-copy "^1.1.8"
+
 "@cardstack/plugin-utils@0.7.0", "@cardstack/plugin-utils@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.7.0.tgz#fa764a8e5babc6e8a5cd908998b4ed697a842f9c"
@@ -170,6 +182,13 @@
   dependencies:
     "@cardstack/di" "0.6.14"
     "@cardstack/plugin-utils" "0.7.0"
+
+"@cardstack/test-support-messenger@^0.6.14":
+  version "0.6.14"
+  resolved "https://registry.yarnpkg.com/@cardstack/test-support-messenger/-/test-support-messenger-0.6.14.tgz#2bc5e92bad4477a29cfc5bf8f8ce715b55ed9e67"
+  dependencies:
+    "@cardstack/logger" "^0.1.0"
+    "@cardstack/plugin-utils" "0.6.14"
 
 "@cardstack/test-support@^0.7.1":
   version "0.7.1"
@@ -4902,7 +4921,7 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
-handlebars@^4.0.4, handlebars@^4.0.6:
+handlebars@^4.0.11, handlebars@^4.0.4, handlebars@^4.0.6:
   version "4.0.11"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.0.11.tgz#630a35dfe0294bc281edae6ffc5d329fc7982dcc"
   dependencies:

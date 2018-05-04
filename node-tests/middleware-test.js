@@ -5,11 +5,11 @@ const JSONAPIFactory          = require('@cardstack/test-support/jsonapi-factory
 const sampleWebhook           = require('./fixtures/kyc-webhook.js');
 const sampleResponse          = require('./fixtures/kyc-retrieve.js');
 const samplePendingResponse   = require('./fixtures/kyc-retrieve-pending.js');
+const TestMessenger           = require('@cardstack/test-support-messenger/messenger');
 const nock                    = require('nock');
 const { resolve }             = require('path');
 const { promisify }           = require("util");
 const pdfText                 = promisify(require('pdf-text'));
-
 
 const {
   createDefaultEnvironment,
@@ -33,10 +33,36 @@ describe('identitymind/middleware', function() {
             env:        'test',
             userModel:  'users',
             kycField:   'kyc-transaction',
-            formAField: 'form-a-status'
+            formAField: 'form-a-status',
+            nameField:  'full-legal-name',
+            emailField: 'email',
+            messageSinkId: 'email-sink',
+            textEmailTemplate: `Hello, {{name}}
+
+The status of your KYC application has changed.
+To see the changes please log in to your dashboard.
+
+Thank you,
+Cardstack team
+`,
+            htmlEmailTemplate: `Hello, <b>{{name}}</b>
+
+The status of your KYC application has <b>changed</b>.
+To see the changes please log in to your dashboard.
+
+Thank you,
+Cardstack team
+`,
+            emailFrom: "from@example.com",
+            kycStatusEmailSubject: "KYC Status has changed",
+
           }
         }
       });
+
+    factory.addResource('message-sinks', 'email-sink').withAttributes({
+      messengerType: '@cardstack/test-support-messenger'
+    });
 
     factory.addResource('content-types', 'users').withRelated('fields', [
       factory.addResource('fields', 'kyc-transaction').withAttributes({
@@ -45,11 +71,19 @@ describe('identitymind/middleware', function() {
       factory.addResource('fields', 'form-a-status').withAttributes({
         fieldType: '@cardstack/core-types::string'
       }),
+      factory.addResource('fields', 'full-legal-name').withAttributes({
+        fieldType: '@cardstack/core-types::string'
+      }),
+      factory.addResource('fields', 'email').withAttributes({
+        fieldType: '@cardstack/core-types::string'
+      })
     ]);
 
     factory.addResource('users', 'user-with-kyc').withAttributes({
-      'kyc-transaction': '92514582',
-      'form-a-status': 'INITIAL'
+      'kyc-transaction':  '92514582',
+      'form-a-status':    'INITIAL',
+      'full-legal-name':  'Mr Test User',
+      'email':            'testuser@example.com'
     });
 
     factory.addResource('users', 'user-with-cached-kyc').withAttributes({
@@ -116,6 +150,19 @@ describe('identitymind/middleware', function() {
     model = (await searcher.get(Session.INTERNAL_PRIVILEGED, 'master', 'identitymind-verifications', '92514582')).data;
 
     expect(model.attributes.state).to.equal('A');
+
+    let sentMessages = await TestMessenger.sentMessages(env);
+    expect(sentMessages).has.length(1, 'sent messages has the wrong length');
+
+    let { message } = sentMessages[0];
+
+    expect(message.to).to.equal('testuser@example.com');
+    expect(message.from).to.equal('from@example.com');
+    expect(message.subject).to.equal("KYC Status has changed");
+    expect(message.text).to.match(/Hello, Mr Test User/);
+    expect(message.html).to.match(/Hello, <b>Mr Test User<\/b>/);
+
+
   });
 
   it('handles requests with missing tid', async function() {

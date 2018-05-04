@@ -6,12 +6,14 @@ const { docUpload }           = require('./im');
 const asyncBusboy             = require('async-busboy');
 const Pdf                     = require('./pdf');
 const Session                 = require('@cardstack/plugin-utils/session');
+const Handlebars              = require('handlebars');
 
 module.exports = declareInjections({
-  indexer:  'hub:indexers',
-  sources:  'hub:data-sources',
-  searcher: 'hub:searchers',
-  writer:   'hub:writers'
+  indexer:    'hub:indexers',
+  sources:    'hub:data-sources',
+  searcher:   'hub:searchers',
+  writer:     'hub:writers',
+  messenger:  'hub:messengers'
 },
 
 class IdentityMindMiddleware {
@@ -46,6 +48,30 @@ class IdentityMindMiddleware {
 
       // Lookup the verification that is posted to refresh it from the api
       this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid, source: 'webhook' }] });
+
+
+      let config = await this.pluginConfig();
+
+      let user = (await this.searcher.searchInControllingBranch(Session.INTERNAL_PRIVILEGED, {
+        filter: {
+          type: config.userModel,
+          [config.kycField]: { exact: body.tid }
+        }
+      })).data[0];
+
+      let name = user.attributes[config.nameField];
+      let email = user.attributes[config.emailField];
+
+      let text = renderHbs(config.textEmailTemplate, { name });
+      let html = renderHbs(config.htmlEmailTemplate, { name });
+
+      await this.messenger.send(config.messageSinkId, {
+        to:       email,
+        subject:  config.kycStatusEmailSubject,
+        from:     config.emailFrom,
+        text,
+        html
+      });
 
       ctxt.status = 200;
     });
@@ -148,4 +174,9 @@ function addCorsHeaders(response) {
   response.set('Access-Control-Allow-Origin', '*');
   response.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   response.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+}
+
+function renderHbs(template, context) {
+  let compiled = Handlebars.compile(template);
+  return compiled(context);
 }
