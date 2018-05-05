@@ -4,7 +4,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Integration | Validations | Factory - Dependent Keys', function(hooks) {
+module('Integration | Validations | File Size', function(hooks) {
   setupTest(hooks);
 
   

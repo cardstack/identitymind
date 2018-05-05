@@ -88,7 +88,7 @@ export default Component.extend({
   docUploadFields,
   didValidate: false,
   postSubmit: null,
-  hasErrors: null,
+  hasValidationErrors: null,
 
   defaultFirstName: '',
   defaultLastName: '',
@@ -112,20 +112,28 @@ export default Component.extend({
         yield willSaveModel(model);
       }
 
-      yield model.save();
+      try {
+        yield model.save();
 
-      let postSubmit = this.get('postSubmit');
+        let postSubmit = this.get('postSubmit');
 
-      if (typeof postSubmit === 'function') {
-        postSubmit();
+        if (typeof postSubmit === 'function') {
+          postSubmit();
+        }
+      } catch(err) {
+        let hasNetworkError = this.get('hasNetworkError');
+
+        if (typeof hasNetworkError === 'function') {
+          hasNetworkError(err);
+        }
+      } finally {
+        this.set('submittingKyc', false);
       }
-
-      this.set('submittingKyc', false);
     } else {
-      let hasErrors = this.get('hasErrors');
+      let hasValidationErrors = this.get('hasValidationErrors');
 
-      if (typeof hasErrors === 'function') {
-        hasErrors();
+      if (typeof hasValidationErrors === 'function') {
+        hasValidationErrors();
       }
     }
   }).drop(),
