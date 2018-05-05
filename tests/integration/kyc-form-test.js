@@ -17,7 +17,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     assert.dom('.kyc-field').exists({ count: 12 });
   });
 
-  test('hooks are fired', async function(assert) {
+  test('happy path hooks are fired', async function(assert) {
     assert.expect(2);
 
     server.post('/identitymind-verifications', () => {
@@ -29,20 +29,32 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     });
 
     await render(hbs`{{kyc-form postSubmit=(action doSomething) willSaveModel=(action doSomething)}}`);
-
     await fillInRequiredFields();
-
     await click('button.submit');
   });
-
-  test('hasErrors hook is fired', async function(assert) {
+  
+  test('hasValidationErrors hook is fired', async function(assert) {
     assert.expect(1);
 
     this.set('doSomething', () => {
       assert.ok(true, 'hook is called');
     });
 
-    await render(hbs`{{kyc-form hasErrors=(action doSomething)}}`);
+    await render(hbs`{{kyc-form hasValidationErrors=(action doSomething)}}`);
+    await click('button.submit');
+  });
+  
+  test('hasNetworkError hook is fired', async function(assert) {
+    assert.expect(1);
+
+    server.post('/identitymind-verifications', { errors: ['something went wrong, dawg.'] }, 400);
+
+    this.set('handleError', (err) => {
+      assert.equal(err.errors[0], 'something went wrong, dawg.', `hook is called`);
+    });
+
+    await render(hbs`{{kyc-form hasNetworkError=(action handleError)}}`);
+    await fillInRequiredFields();
     await click('button.submit');
   });
 
