@@ -41,10 +41,6 @@ const fields = {
     hint: "User's street address, including house number, street name, and apartment number",
     required: true
   },
-  bz: {
-    name: "Zip Code",
-    hint: "User's zip code"
-  },
   bc: {
     name: "City",
     hint: "User's city",
@@ -53,6 +49,10 @@ const fields = {
   bs: {
     name: "State / Province",
     hint: "User's state or province, use official postal state/region abbreviations whenever possible (e.g. CA for California)."
+  },
+  bz: {
+    name: "Zip Code",
+    hint: "User's zip code"
   },
   bco: {
     name: "Country",
