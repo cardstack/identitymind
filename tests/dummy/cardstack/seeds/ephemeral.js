@@ -28,6 +28,7 @@ function initialModels() {
     factory.addResource('fields', 'rcd').withAttributes({ fieldType: '@cardstack/core-types::string' }),
     factory.addResource('fields', 'scan-data').withAttributes({ fieldType: '@cardstack/core-types::string' }),
     factory.addResource('fields', 'face-image-data').withAttributes({ fieldType: '@cardstack/core-types::string' }),
+    factory.addResource('fields', 'address-scan-data').withAttributes({ fieldType: '@cardstack/core-types::string' }),
     factory.addResource('fields', 'edna-score-card').withAttributes({ fieldType: '@cardstack/core-types::object' }),
     factory.addResource('fields', 'last-checked-at').withAttributes({ fieldType: '@cardstack/core-types::date' }),
     factory.addResource('fields', 'user')

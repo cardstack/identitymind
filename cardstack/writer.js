@@ -35,9 +35,10 @@ class Writer {
       let mappedAttributes = mapKeys(attributes, (v, k) => camelCase(k));
       mappedAttributes.stage = 1;
 
-      let { scanData, faceImageData } = mappedAttributes;
+      let { scanData, addressScanData, faceImageData } = mappedAttributes;
 
       delete mappedAttributes.scanData;
+      delete mappedAttributes.addressScanData;
       delete mappedAttributes.faceImageData;
 
       let kycResult = await kyc(mappedAttributes, this.config);
@@ -50,6 +51,7 @@ class Writer {
       newAttributes['last-checked-at'] = moment().format();
 
       this._uploadDataUriFile(scanData, "Scan Data", id);
+      this._uploadDataUriFile(addressScanData, "Address Scan Data", id);
       this._uploadDataUriFile(faceImageData, "Face Image Data", id);
 
       let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;

@@ -70,6 +70,12 @@ const docUploadFields = {
     type: "file",
     required: true
   },
+  addressScanData: {
+    name: "Proof of Address",
+    hint: "Scan of utility bill",
+    type: "file",
+    required: true
+  },
   faceImageData: {
     name: "Face Image",
     hint: "Picture of user's face with identity document in frame",

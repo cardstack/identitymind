@@ -159,12 +159,17 @@ describe('identitymind/writer', function() {
 
     it("handles submission when the initial result without image data is accepted", async function() {
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -180,6 +185,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -198,13 +204,18 @@ describe('identitymind/writer', function() {
       await env.setUser('users', 'create-only');
 
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.backsideImageData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -220,7 +231,8 @@ describe('identitymind/writer', function() {
           attributes: {
             man:                'test@example.com',
             "scan-data":            dataUriText('scan data content'),
-            "face-image-data":      dataUriText('face image data content')
+            "face-image-data":      dataUriText('face image data content'),
+            "address-scan-data":    dataUriText('address scan data content')
           },
           relationships: {
             user: {
@@ -241,7 +253,7 @@ describe('identitymind/writer', function() {
       await env.setUser('users', 'create-only');
 
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.backsideImageData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
@@ -307,6 +319,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':  dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -323,12 +336,17 @@ describe('identitymind/writer', function() {
 
     it("handles submission when the initial result is rejected for blacklist", async function() {
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Blacklist"));
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -344,6 +362,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':  dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -360,12 +379,17 @@ describe('identitymind/writer', function() {
 
     it("handles submission when the initial result is rejected for sanctions", async function() {
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Sanctions"));
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -381,6 +405,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':  dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -397,12 +422,17 @@ describe('identitymind/writer', function() {
 
     it("handles submission when the initial result is rejected with other fraud rules", async function() {
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Some Other Reason"));
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -419,6 +449,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':  dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
