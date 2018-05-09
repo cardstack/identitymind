@@ -4,18 +4,18 @@
     <div class="detail required">Indicates required field</div>
     <fieldset class="form-group">
       {{#each-in fields as |field info|}}
-        {{text-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning}}
+        {{text-input model=model field=field info=info didValidate=didValidate isDisabled=(or submitKyc.isRunning info.disabled)}}
       {{/each-in}}
     </fieldset>
     <fieldset class="form-group">
       <legend class="title id-icon">Upload Identification</legend>
-      <p class="summary">Please upload a photograph or scanned image of a state-issued passport. 
+      <p class="summary">Please upload a photograph or scanned image of a state-issued passport.
         Make sure your image is clear and detailed; low-quality images will be rejected.</p>
       <div class="summary file-icon"><a href="/assets/media/doc-capture-best-practices.pdf" target="_blank">
         Document Capture Best Practices</a></div>
       <div class="detail">Accepted file formats: <span class="formats">JPG, PNG, PDF</span></div>
       {{#each-in docUploadFields as |field info|}}
-        {{file-input model=model field=field info=info didValidate=didValidate isDisabled=submitKyc.isRunning assignFile=assignFile}}
+        {{file-input model=model field=field info=info didValidate=didValidate isDisabled=(or submitKyc.isRunning info.disabled) assignFile=assignFile}}
       {{/each-in}}
       <div class="upload-instructions">
         <div class="instructions-text">For security purposes, we require you upload a full color portrait of yourself holding your passport as shown in the example.</div>
