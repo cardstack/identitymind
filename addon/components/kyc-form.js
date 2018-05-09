@@ -4,6 +4,7 @@ import { task } from 'ember-concurrency';
 import layout from '../templates/components/kyc-form';
 import { Promise } from "rsvp";
 import Ember from 'ember';
+import { set } from '@ember/object';
 
 const { testing } = Ember;
 
@@ -90,9 +91,9 @@ export default Component.extend({
   postSubmit: null,
   hasValidationErrors: null,
 
-  defaultFirstName: '',
-  defaultLastName: '',
-  defaultEmail: '',
+  defaultFirstName: null,
+  defaultLastName: null,
+  defaultEmail: null,
 
   submitKyc: task(function * () {
     let model = this.get('model');
@@ -140,7 +141,7 @@ export default Component.extend({
 
   assignFile: task(function * (field, event) {
     let file = testing ? event.detail.testingFiles[0] : event.target.files[0];
-    
+
     this.set(`model.${field}FileSize`, file.size);
 
     if (this.get(`model.validations.attrs.${field}.isValid`)) {
@@ -160,11 +161,17 @@ export default Component.extend({
   init() {
     this.model = this.get('store').createRecord('identitymind-verification');
 
+    let defaultEmail = this.get('defaultEmail');
+
     this.model.setProperties({
       bfn: this.get('defaultFirstName'),
       bln: this.get('defaultLastName'),
-      tea: this.get('defaultEmail')
-    })
+      tea: defaultEmail
+    });
+
+    let emailField = this.get('fields.tea');
+
+    set(emailField, 'disabled', !!defaultEmail);
 
     this._super(...arguments);
   }

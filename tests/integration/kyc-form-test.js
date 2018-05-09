@@ -32,7 +32,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await fillInRequiredFields();
     await click('button.submit');
   });
-  
+
   test('hasValidationErrors hook is fired', async function(assert) {
     assert.expect(1);
 
@@ -43,7 +43,7 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await render(hbs`{{kyc-form hasValidationErrors=(action doSomething)}}`);
     await click('button.submit');
   });
-  
+
   test('hasNetworkError hook is fired', async function(assert) {
     assert.expect(1);
 
@@ -58,11 +58,21 @@ module('Integration | Component | KYC form hooks', function(hooks) {
     await click('button.submit');
   });
 
-  test('pre-populate name and email fields if user is passed in', async function(assert) {
+  test('pre-populate name and email fields if they are passed in', async function(assert) {
     await render(hbs`{{kyc-form defaultFirstName='Bill' defaultLastName='Wagby' defaultEmail='bill@wagby.net'}}`);
 
     assert.dom('#kyc-field_bfn').hasValue('Bill', 'first name is correct');
     assert.dom('#kyc-field_bln').hasValue('Wagby', 'last name is correct');
     assert.dom('#kyc-field_tea').hasValue('bill@wagby.net', 'email is correct');
+    assert.dom('#kyc-field_tea').isDisabled('email field is disabled when pre-populated');
+  });
+
+  test('email field not disabled when it is empty', async function(assert) {
+    await render(hbs`{{kyc-form defaultFirstName='Bill' defaultLastName='Wagby'}}`);
+
+    assert.dom('#kyc-field_bfn').hasValue('Bill', 'first name is correct');
+    assert.dom('#kyc-field_bln').hasValue('Wagby', 'last name is correct');
+    assert.dom('#kyc-field_tea').hasValue('', 'email is correct');
+    assert.dom('#kyc-field_tea').isNotDisabled('email field is not disabled when not passed in');
   });
 });
