@@ -10,4 +10,9 @@
       {{get model.validations.attrs (concat field '.message')}}
     </div>
   {{/if}}
+  {{#if (eq field 'scanData')}}
+    <p class="doc-upload-info">Please upload a photograph or scanned image of a state-issued passport. Make sure your image is clear and detailed; low-quality images will be rejected. The file size limit for uploads is 4 MB.</p>
+  {{else if (eq field 'addressScanData')}}
+    <p class="doc-upload-info">Please upload a photograph or scanned image of a document within the last 3 months that lists your name and residential address. Acceptable documents include bank statements, utility bills, ID, or a household registration. Make sure your image is clear and detailed; low-quality images will be rejected.</p>
+  {{/if}}
 </div>
