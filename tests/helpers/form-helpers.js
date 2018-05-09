@@ -12,7 +12,8 @@ const validInputValues = {
   bc: 'Harpers Ferry',
   bs: 'NY',
   scanData: '',
-  faceImageData: ''
+  faceImageData: '',
+  addressScanData: ''
 };
 
 export function uploadFile(selector) {
