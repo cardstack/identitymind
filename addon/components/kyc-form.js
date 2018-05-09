@@ -38,7 +38,7 @@ const fields = {
     required: true
   },
   bsn: {
-    name: "Address",
+    name: "Residential Address",
     hint: "User's street address, including house number, street name, and apartment number",
     required: true
   },
