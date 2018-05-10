@@ -42,12 +42,12 @@ module('Integration | Validations | File Size', function(hooks) {
     obj.set('favoriteSelfieFileSize', 238746);
     
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too small');
-    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'Your uploaded file must be larger than 1MB', 'error message is correct');
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'Your uploaded file must be larger than 1 MB', 'error message is correct');
 
     obj.set('favoriteSelfieFileSize', 23987420);
     
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too large');
-    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'Your uploaded file must be smaller than 4MB', 'error message is correct');
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file you uploaded exceeds the file size limit of 4 MB. Please try again.', 'error message is correct');
   });
 
   test('use default not present message', function(assert) {

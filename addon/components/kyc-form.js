@@ -147,6 +147,7 @@ export default Component.extend({
 
   assignFile: task(function * (field, event) {
     let file = testing ? event.detail.testingFiles[0] : event.target.files[0];
+    if (!file) { return; }
 
     this.set(`model.${field}FileSize`, file.size);
 
