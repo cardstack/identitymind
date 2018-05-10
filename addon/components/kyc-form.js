@@ -150,6 +150,7 @@ export default Component.extend({
     if (!file) { return; }
 
     this.set(`model.${field}FileSize`, file.size);
+    this.set(`model.${field}FileName`, file.name);
 
     if (this.get(`model.validations.attrs.${field}.isValid`)) {
       let reader  = new FileReader();
