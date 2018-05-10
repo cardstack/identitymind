@@ -265,6 +265,11 @@ describe('identitymind/writer', function() {
         .reply(200);
 
       nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("bbbbbbbbbbbb"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("cccccccccccc"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
@@ -278,6 +283,7 @@ describe('identitymind/writer', function() {
           attributes: {
             man:                'test@example.com',
             "scan-data":            dataUriText(fourMegsOf("a")),
+            "address-scan-data":    dataUriText(fourMegsOf("b")),
             "face-image-data":      dataUriText(fourMegsOf("c"))
           },
           relationships: {
@@ -298,12 +304,17 @@ describe('identitymind/writer', function() {
 
     it("handles submission when the initial result without image data is marked for review", async function() {
       nock('https://test.identitymind.com')
-        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.faceImageData)
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.addressScanData && !body.faceImageData)
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("MANUAL_REVIEW"));
 
       nock('https://test.identitymind.com')
         .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -319,7 +330,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':  dataUriText('address scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -362,7 +373,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':  dataUriText('address scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -405,7 +416,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':  dataUriText('address scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {
@@ -449,7 +460,7 @@ describe('identitymind/writer', function() {
         attributes: {
           man:                'test@example.com',
           "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':  dataUriText('address scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
           "face-image-data":      dataUriText('face image data content')
         },
         relationships: {

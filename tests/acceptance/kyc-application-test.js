@@ -17,7 +17,7 @@ module('Acceptance | KYC Application', function(hooks) {
 
     await click('button.submit');
 
-    assert.dom('.field-error').exists({ count: 10 });
+    assert.dom('.field-error').exists({ count: 11 });
 
     await fillInKycField('bfn');
     await fillInKycField('bln');
@@ -29,9 +29,10 @@ module('Acceptance | KYC Application', function(hooks) {
 
     await click('button.submit');
 
-    assert.dom('.field-error').exists({ count: 5 });
+    assert.dom('.field-error').exists({ count: 6 });
 
     uploadFile('#kyc-field_scanData');
+    uploadFile('#kyc-field_addressScanData');
     uploadFile('#kyc-field_faceImageData');
 
     await click('button.submit');
