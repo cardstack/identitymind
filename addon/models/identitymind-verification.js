@@ -22,6 +22,10 @@ const Validations = buildValidations({
     maxInMb: 4,
     notPresentMessage: 'This document is required'
   }),
+  addressScanData: validator('file-size', {
+    maxInMb: 4,
+    notPresentMessage: 'This document is required'
+  }),
   faceImageData: validator('file-size', {
     maxInMb: 4,
     notPresentMessage: 'This document is required'

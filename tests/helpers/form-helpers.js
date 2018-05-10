@@ -40,5 +40,6 @@ export async function fillInRequiredFields() {
   await fillInKycField('dob');
 
   uploadFile('#kyc-field_scanData');
+  uploadFile('#kyc-field_addressScanData');
   uploadFile('#kyc-field_faceImageData');
 }
