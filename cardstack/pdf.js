@@ -7,6 +7,7 @@ const { exec }          = require('child_process');
 const logoPath    = assetPath('logo.png'),
   lightFont       = assetPath('ALSEkibastuz.ttf'),
   boldFont        = assetPath('ALSEkibastuz-Bold.ttf'),
+  formFont        = assetPath('DejaVuSans.ttf'),
   lineGap         = 2,
   marginLeft      = 115,
   marginRight     = 85,
@@ -131,7 +132,7 @@ class Pdf {
 
     if (opts.value) {
       let prevY = this.doc.y;
-      this.text(opts.value, valueX, valueY, {width: valueWidth, font: "Helvetica", align: 'left', size: 8, lineGap: 0.001});
+      this.text(opts.value, valueX, valueY, {width: valueWidth, font: formFont, align: 'left', size: 8, lineGap: 0.001});
       this.doc.y = prevY;
     }
   }
