@@ -117,7 +117,23 @@ class IdentityMindMiddleware {
         return;
       }
 
-      await docUpload(kycTransactionId, { file }, config);
+      let name = user.data.attributes[config.nameField];
+      if (name.match(/^[ -~]+$/)) { // match all printable ascii characters
+        name = name.replace(/\s+/g, '');
+      } else {
+        name = kycTransactionId;
+      }
+      let filename = `FormA-${name}.pdf`;
+
+      let formData = {
+        file: {
+          value: file,
+          options: { filename }
+        }
+      };
+
+
+      await docUpload(kycTransactionId, formData, config);
 
       user.data.attributes[config.formAField] = 'PENDING';
 
