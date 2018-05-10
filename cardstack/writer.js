@@ -41,6 +41,10 @@ class Writer {
       delete mappedAttributes.addressScanData;
       delete mappedAttributes.faceImageData;
 
+      let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
+
+      mappedAttributes.tea = userData.attributes[this.config.emailField];
+
       let kycResult = await kyc(mappedAttributes, this.config);
 
       let newAttributes = mapKeys(kycResult, (v, k) => kebabCase(k));
@@ -54,7 +58,6 @@ class Writer {
       this._uploadDataUriFile(addressScanData, "Address Scan Data", id);
       this._uploadDataUriFile(faceImageData, "Face Image Data", id);
 
-      let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
       userData.attributes[this.config.kycField] = id;
       await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
       await this.indexer.update({ forceRefresh: true });

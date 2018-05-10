@@ -27,7 +27,9 @@ describe('identitymind/writer', function() {
             pass:       'testpass',
             env:        'test',
             userModel:  'users',
-            kycField:   'kyc-transaction'
+            kycField:   'kyc-transaction',
+            emailField: 'email',
+            nameField:  'name'
           }
         }
       });
@@ -35,10 +37,19 @@ describe('identitymind/writer', function() {
     factory.addResource('content-types', 'users').withRelated('fields', [
       factory.addResource('fields', 'kyc-transaction').withAttributes({
         fieldType: '@cardstack/core-types::string'
+      }),
+      factory.addResource('fields', 'email').withAttributes({
+        fieldType: '@cardstack/core-types::string'
+      }),
+      factory.addResource('fields', 'name').withAttributes({
+        fieldType: '@cardstack/core-types::string'
       })
     ]);
 
-    factory.addResource('users', 'create-only');
+    factory.addResource('users', 'create-only').withAttributes({
+      email: 'goodemail@example.com',
+      name: 'Goodfirst Goodlast'
+    });
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
@@ -61,7 +72,7 @@ describe('identitymind/writer', function() {
   it('can send KYC data to identitymind', async function() {
 
     nock('https://test.identitymind.com')
-      .post('/im/account/consumer', matches({man: 'test@example.com'}))
+      .post('/im/account/consumer', matches({bsn: '123 a street'}))
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
 
@@ -69,7 +80,7 @@ describe('identitymind/writer', function() {
     let created = await writer.create('master', sessions.create('users', 'create-only'), 'identitymind-verifications', {
       type: 'identitymind-verifications',
       attributes: {
-        man:          'test@example.com'
+        bsn:          '123 a street'
       },
       relationships: {
         user: {
@@ -100,7 +111,7 @@ describe('identitymind/writer', function() {
 
   it('associates the identitymind request with the user model', async function() {
     nock('https://test.identitymind.com')
-      .post('/im/account/consumer', matches({man: 'test@example.com'}))
+      .post('/im/account/consumer', matches({bsn: '123 a street'}))
       .basicAuth({ user: 'testuser', pass: 'testpass' })
       .reply(200, sampleResponse);
 
@@ -110,7 +121,67 @@ describe('identitymind/writer', function() {
     await writer.create('master', session, 'identitymind-verifications', {
       type: 'identitymind-verifications',
       attributes: {
-        man: 'test@example.com'
+        bsn: '123 a street'
+      },
+      relationships: {
+        user: {
+          data: {
+            id: 'create-only',
+            type: 'users'
+          }
+        }
+      }
+    });
+
+    let user = (await searcher.get(env.session, 'master', 'users', 'create-only')).data;
+
+    expect(user.attributes['kyc-transaction']).to.equal("92514582");
+  });
+
+  it("doesn't allow overriding the user's email", async function() {
+    nock('https://test.identitymind.com')
+      .post('/im/account/consumer', matches({tea: 'goodemail@example.com'}))
+      .basicAuth({ user: 'testuser', pass: 'testpass' })
+      .reply(200, sampleResponse);
+
+
+    let session = sessions.create('users', 'create-only');
+
+    await writer.create('master', session, 'identitymind-verifications', {
+      type: 'identitymind-verifications',
+      attributes: {
+        tea: 'bademail@example.com'
+      },
+      relationships: {
+        user: {
+          data: {
+            id: 'create-only',
+            type: 'users'
+          }
+        }
+      }
+    });
+
+    let user = (await searcher.get(env.session, 'master', 'users', 'create-only')).data;
+
+    expect(user.attributes['kyc-transaction']).to.equal("92514582");
+  });
+
+  it("allows overriding the user's name", async function() {
+    nock('https://test.identitymind.com')
+      .post('/im/account/consumer', matches({man: 'New Name', bfn: 'New', bln: 'Name'}))
+      .basicAuth({ user: 'testuser', pass: 'testpass' })
+      .reply(200, sampleResponse);
+
+
+    let session = sessions.create('users', 'create-only');
+
+    await writer.create('master', session, 'identitymind-verifications', {
+      type: 'identitymind-verifications',
+      attributes: {
+        man: 'New Name',
+        bfn: 'New',
+        bln: 'Name'
       },
       relationships: {
         user: {
