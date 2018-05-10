@@ -47,7 +47,7 @@ module('Integration | Validations | File Size', function(hooks) {
     obj.set('favoriteSelfieFileSize', 23987420);
     
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too large');
-    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file you uploaded exceeds the file size limit of 4 MB. Please try again.', 'error message is correct');
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file you are trying to upload exceeds the file size limit of 4 MB. Please try again.', 'error message is correct');
   });
 
   test('use default not present message', function(assert) {
