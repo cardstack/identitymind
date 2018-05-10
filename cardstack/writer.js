@@ -44,9 +44,14 @@ class Writer {
       delete mappedAttributes.addressScanData;
       delete mappedAttributes.faceImageData;
 
+
       let userData = (await this.searcher.getFromControllingBranch(Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id)).data;
 
       mappedAttributes.tea = userData.attributes[this.config.emailField];
+
+      if (session.meta && session.meta.ip) {
+        mappedAttributes.ip = session.meta.ip;
+      }
 
       let kycResult = await kyc(mappedAttributes, this.config);
 

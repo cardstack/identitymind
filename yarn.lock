@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@cardstack/authentication@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@cardstack/authentication/-/authentication-0.7.1.tgz#3cb793f0952c85b3d4d5aaf024e7838d0a3514c3"
+"@cardstack/authentication@^0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@cardstack/authentication/-/authentication-0.7.10.tgz#8d3f5b7a6e4320db073d56310b477d03a6202049"
   dependencies:
     "@cardstack/di" "0.6.14"
     "@cardstack/logger" "^0.1.0"
-    "@cardstack/plugin-utils" "0.7.0"
+    "@cardstack/plugin-utils" "0.7.10"
     ember-cli-babel "^6.8.2"
     ember-cli-htmlbars "^2.0.1"
     ember-css-url "0.2.0"
@@ -26,6 +26,16 @@
   dependencies:
     "@cardstack/di" "0.6.14"
     "@cardstack/plugin-utils" "0.7.0"
+    ember-cli-babel "^6.8.2"
+    ember-fetch "^1.4.0"
+    koa-better-route "^0.1.0"
+
+"@cardstack/codegen@0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@cardstack/codegen/-/codegen-0.7.10.tgz#bb2dc6f05256d3857e584e470e8f0a6bfebcdc14"
+  dependencies:
+    "@cardstack/di" "0.6.14"
+    "@cardstack/plugin-utils" "0.7.10"
     ember-cli-babel "^6.8.2"
     ember-fetch "^1.4.0"
     koa-better-route "^0.1.0"
@@ -59,6 +69,17 @@
     jsondiffpatch "^0.2.5"
     lodash "^4.17.4"
 
+"@cardstack/elasticsearch@0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@cardstack/elasticsearch/-/elasticsearch-0.7.10.tgz#adc0bddac0c01d509ddf7a44ab076da047bd2c81"
+  dependencies:
+    "@cardstack/di" "0.6.14"
+    "@cardstack/logger" "^0.1.0"
+    "@cardstack/plugin-utils" "0.7.10"
+    elasticsearch "^12.1.3"
+    jsondiffpatch "^0.2.5"
+    lodash "^4.17.4"
+
 "@cardstack/ephemeral@0.7.0", "@cardstack/ephemeral@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@cardstack/ephemeral/-/ephemeral-0.7.0.tgz#f487350baac2527d7b0af8329cec34577a305eb3"
@@ -78,7 +99,7 @@
   dependencies:
     handlebars "^4.0.6"
 
-"@cardstack/hub@0.7.1", "@cardstack/hub@^0.7.1":
+"@cardstack/hub@0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@cardstack/hub/-/hub-0.7.1.tgz#b525692c37e2721712b8db687292c76d0e018e1f"
   dependencies:
@@ -89,6 +110,38 @@
     "@cardstack/handlebars" "0.6.14"
     "@cardstack/logger" "^0.1.0"
     "@cardstack/plugin-utils" "0.7.0"
+    broccoli-concat "^3.2.2"
+    broccoli-plugin "^1.3.0"
+    broccoli-source "^1.1.0"
+    chalk "^2.3.0"
+    commander "^2.9.0"
+    dag-map "^2.0.2"
+    denodeify "^1.2.1"
+    docker-container-id "^1.0.1"
+    ember-cli-babel "^6.8.2"
+    handlebars "^4.0.6"
+    koa "2"
+    koa-compose "^3.2.1"
+    lodash "^4.17.4"
+    nssocket "^0.6.0"
+    path-is-inside "^1.0.2"
+    quick-temp "^0.1.8"
+    resolve "^1.3.3"
+    superagent "^3.8.1"
+    tar-fs "^1.16.0"
+    tar-stream "^1.5.4"
+
+"@cardstack/hub@^0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@cardstack/hub/-/hub-0.7.10.tgz#a896fbc7a1dc891b6047566338ec3dd515c8844e"
+  dependencies:
+    "@cardstack/codegen" "0.7.10"
+    "@cardstack/core-types" "0.6.14"
+    "@cardstack/di" "0.6.14"
+    "@cardstack/elasticsearch" "0.7.10"
+    "@cardstack/handlebars" "0.6.14"
+    "@cardstack/logger" "^0.1.0"
+    "@cardstack/plugin-utils" "0.7.10"
     broccoli-concat "^3.2.2"
     broccoli-plugin "^1.3.0"
     broccoli-source "^1.1.0"
@@ -153,9 +206,21 @@
     superagent "^3.8.1"
     symlink-or-copy "^1.1.8"
 
-"@cardstack/plugin-utils@0.7.0", "@cardstack/plugin-utils@^0.7.0":
+"@cardstack/plugin-utils@0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.7.0.tgz#fa764a8e5babc6e8a5cd908998b4ed697a842f9c"
+  dependencies:
+    "@cardstack/di" "0.6.14"
+    broccoli-plugin "^1.3.0"
+    ember-cli-babel "^6.8.2"
+    handlebars "^4.0.6"
+    ms "2.0.0"
+    superagent "^3.8.1"
+    symlink-or-copy "^1.1.8"
+
+"@cardstack/plugin-utils@0.7.10", "@cardstack/plugin-utils@^0.7.10":
+  version "0.7.10"
+  resolved "https://registry.yarnpkg.com/@cardstack/plugin-utils/-/plugin-utils-0.7.10.tgz#dc480e206c4124857f917022bdd36b3e7f1c8f46"
   dependencies:
     "@cardstack/di" "0.6.14"
     broccoli-plugin "^1.3.0"

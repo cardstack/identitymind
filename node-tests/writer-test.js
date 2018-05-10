@@ -203,6 +203,36 @@ describe('identitymind/writer', function() {
     expect(user.attributes['kyc-transaction']).to.equal("92514582");
   });
 
+
+  it('sends the IP address of the user to IM from the session', async function() {
+    nock('https://test.identitymind.com')
+      .post('/im/account/consumer', matches({ip: '1.2.3.4'}))
+      .basicAuth({ user: 'testuser', pass: 'testpass' })
+      .reply(200, sampleResponse);
+
+
+    let session = sessions.create('users', 'create-only', {ip: '1.2.3.4'});
+
+    await writer.create('master', session, 'identitymind-verifications', {
+      type: 'identitymind-verifications',
+      attributes: {
+        man: 'test@example.com'
+      },
+      relationships: {
+        user: {
+          data: {
+            id: 'create-only',
+            type: 'users'
+          }
+        }
+      }
+    });
+
+    let user = (await searcher.get(env.session, 'master', 'users', 'create-only')).data;
+
+    expect(user.attributes['kyc-transaction']).to.equal("92514582");
+  });
+
   describe("identitymind/writer/submission-rules", async function() {
 
     function imResponse(res, ruleName="DUPTRANSACTION") {
