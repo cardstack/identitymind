@@ -2,11 +2,12 @@ const { declareInjections }   = require('@cardstack/di');
 const route                   = require('koa-better-route');
 const jsonBody                = require('koa-json-body')({ limit: '500kb' });
 const compose                 = require('koa-compose');
-const { docUpload }           = require('./im');
+const moment                  = require('moment');
 const asyncBusboy             = require('async-busboy');
 const Pdf                     = require('./pdf');
 const Session                 = require('@cardstack/plugin-utils/session');
 const Handlebars              = require('handlebars');
+const { s3Upload }            = require('./s3');
 
 module.exports = declareInjections({
   indexer:    'hub:indexers',
@@ -123,19 +124,13 @@ class IdentityMindMiddleware {
       } else {
         name = kycTransactionId;
       }
-      let filename = `FormA-${name}.pdf`;
 
-      let formData = {
-        file: {
-          value: file,
-          options: { filename }
-        }
-      };
+      let key = `${kycTransactionId}/FormA-${name}.pdf`;
 
-
-      await docUpload(kycTransactionId, formData, config);
+      await s3Upload(key, file);
 
       user.data.attributes[config.formAField] = 'PENDING';
+      user.data.attributes[config.formATimestampField] = moment().format();
 
       await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, user.data.type, user.data.id, user.data);
       await this.indexer.update({ forceRefresh: true });

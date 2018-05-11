@@ -1,10 +1,13 @@
 const PendingChange           = require('@cardstack/plugin-utils/pending-change');
-const { kyc, docUpload }      = require('./im');
+const { kyc }                 = require('./im');
 const { declareInjections }   = require('@cardstack/di');
 const Session                 = require('@cardstack/plugin-utils/session');
 const parseDataUri            = require('parse-data-uri');
 const mime                    = require('mime-types');
 const moment                  = require('moment');
+const { s3Upload }            = require('./s3');
+const Pdf                     = require('./pdf');
+const { countries }           = require('country-data');
 
 const { mapKeys, camelCase, kebabCase }  = require('lodash');
 
@@ -54,9 +57,11 @@ class Writer {
 
       newAttributes['last-checked-at'] = moment().format();
 
-      this._uploadDataUriFile(scanData, "Scan Data", id);
-      this._uploadDataUriFile(addressScanData, "Address Scan Data", id);
-      this._uploadDataUriFile(faceImageData, "Face Image Data", id);
+      await this._uploadDataUriFile(scanData, "Scan Data", id);
+      await this._uploadDataUriFile(addressScanData, "Address Scan Data", id);
+      await this._uploadDataUriFile(faceImageData, "Face Image Data", id);
+
+      await this._uploadBlankFormA(id, mappedAttributes);
 
       userData.attributes[this.config.kycField] = id;
       await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
@@ -76,12 +81,37 @@ class Writer {
   async _uploadDataUriFile(dataUri, description, transactionId) {
     if (dataUri) {
       let parsed = parseDataUri(dataUri);
-      let file = {
-        value: parsed.data,
-        options: { filename: `${description}.${mime.extension(parsed.mimeType)}`, contentType: parsed.mimeType }
-      };
+      let key = `${transactionId}/${description}.${mime.extension(parsed.mimeType)}`;
 
-      await docUpload(transactionId, { file, description }, this.config);
+      await s3Upload(key, Buffer.from(parsed.data));
     }
   }
+
+  async _uploadBlankFormA(transactionId, kycData) {
+
+    let address = 'bsn bc bs bz'.split(' ')
+      .map(f => kycData[f])
+      .filter(f => f && f.length > 0)
+      .join(", ");
+
+    let data = {
+      name:         kycData.bfn,
+      surname:      kycData.bln,
+      dob:          moment(kycData.dob).format("Do MMMM YYYY"),
+      nationality:  countryName(kycData.sco),
+      address:      address,
+      country:      countryName(kycData.bco)
+    };
+
+    let pdf = new Pdf(data);
+
+    let key = `${transactionId}/FormA-${transactionId} (Blank).pdf`;
+    await s3Upload(key, pdf.toStream());
+  }
+
 });
+
+function countryName(iso2Code) {
+  let data = countries[iso2Code];
+  return data && data.name;
+}

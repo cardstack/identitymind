@@ -10,6 +10,8 @@ const DataURI         = require('datauri');
 const supertest       = require('supertest');
 const Koa             = require('koa');
 const moment          = require('moment');
+const { s3 }          = require('../cardstack/s3');
+const sinon           = require('sinon');
 
 
 describe('identitymind/writer', function() {
@@ -62,10 +64,13 @@ describe('identitymind/writer', function() {
     let app = new Koa();
     app.use(env.lookup('hub:middleware-stack').middleware());
     request = supertest(app.callback());
+
+    sinon.replace(s3, 'upload', sinon.fake.returns({ promise() { return Promise.resolve(); } }));
   });
 
   afterEach(async function() {
     expect(nock.activeMocks().length).to.equal(0, "There are active nock mocks that should have been called");
+    sinon.restore();
     await destroyDefaultEnvironment(env);
   });
 
@@ -234,20 +239,7 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
 
       let session = sessions.create('users', 'create-only');
 
@@ -269,6 +261,11 @@ describe('identitymind/writer', function() {
         }
       });
 
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
     });
 
     it("It does the correct amount of requests when requesting via the api", async function() {
@@ -279,21 +276,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
 
 
       let doc = {
@@ -318,6 +300,12 @@ describe('identitymind/writer', function() {
 
       let response = await request.post(`/api/identitymind-verifications`).send(doc);
       expect(response).hasStatus(201);
+
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
     });
 
     it("Allows uploading large files", async function() {
@@ -328,22 +316,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("ACCEPT"));
 
-
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("aaaaaaaaaaa"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("bbbbbbbbbbbb"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("cccccccccccc"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
 
 
       let fourMegsOf = (c) => c.repeat(4 * 1000 * 1000);
@@ -370,6 +342,9 @@ describe('identitymind/writer', function() {
 
       let response = await request.post(`/api/identitymind-verifications`).send(doc);
       expect(response.status).to.equal(201);
+
+      expect(s3.upload).to.have.callCount(4);
+
     });
 
 
@@ -379,20 +354,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("MANUAL_REVIEW"));
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
 
       let session = sessions.create('users', 'create-only');
 
@@ -413,6 +374,12 @@ describe('identitymind/writer', function() {
           }
         }
       });
+
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
 
     });
 
@@ -422,21 +389,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Blacklist"));
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
@@ -457,6 +409,11 @@ describe('identitymind/writer', function() {
         }
       });
 
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
     });
 
     it("handles submission when the initial result is rejected for sanctions", async function() {
@@ -465,21 +422,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Sanctions"));
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
@@ -500,6 +442,11 @@ describe('identitymind/writer', function() {
         }
       });
 
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
     });
 
     it("handles submission when the initial result is rejected with other fraud rules", async function() {
@@ -508,22 +455,6 @@ describe('identitymind/writer', function() {
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200, imResponse("DENY", "Some Other Reason"));
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("face image data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("address scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.includes("scan data content"))
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
-
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
@@ -543,6 +474,12 @@ describe('identitymind/writer', function() {
           }
         }
       });
+
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
 
     });
   });
