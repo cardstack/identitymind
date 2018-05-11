@@ -86,6 +86,13 @@ Cardstack team
       'email':            'testuser@example.com'
     });
 
+    factory.addResource('users', 'user-with-kyc-and-non-ascii-name').withAttributes({
+      'kyc-transaction':  '92514583',
+      'form-a-status':    'INITIAL',
+      'full-legal-name':  'Mr Têst Üser',
+      'email':            'testuser@example.com'
+    });
+
     factory.addResource('users', 'user-with-cached-kyc').withAttributes({
       'kyc-transaction': '92514583'
     });
@@ -204,7 +211,13 @@ Cardstack team
       await env.setUser('users', 'user-with-kyc');
 
       nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.length > 10000)
+        .post("/im/account/consumer/92514582/files", bodyHex => {
+          let body = hexToString(bodyHex);
+
+          return body.includes(`Content-Disposition: form-data; name="file"; filename="FormA-MrTestUser.pdf"`) &&
+            body.includes("Content-Type: image/jpeg") &&
+            body.length > 10000;
+        })
         .basicAuth({ user: 'testuser', pass: 'testpass' })
         .reply(200);
 
@@ -215,6 +228,30 @@ Cardstack team
       expect(response).hasStatus(201);
 
       let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc')).data;
+
+      expect(user.attributes['form-a-status']).to.equal("PENDING");
+    });
+
+    it("Uploads the document with the transaction id if there are non-ascii characters in the user's name", async function() {
+      await env.setUser('users', 'user-with-kyc-and-non-ascii-name');
+
+      nock('https://test.identitymind.com')
+        .post("/im/account/consumer/92514583/files", bodyHex => {
+          let body = hexToString(bodyHex);
+          return body.includes(`Content-Disposition: form-data; name="file"; filename="FormA-92514583.pdf"`) &&
+            body.includes("Content-Type: image/jpeg") &&
+            body.length > 10000;
+        })
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200);
+
+      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let response = await request.post(`/identitymind/document-uploads`)
+        .attach('file', passportPath);
+
+      expect(response).hasStatus(201);
+
+      let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc-and-non-ascii-name')).data;
 
       expect(user.attributes['form-a-status']).to.equal("PENDING");
     });
@@ -248,3 +285,11 @@ Cardstack team
 
   });
 });
+
+function hexToString(hex) {
+  let str = '';
+  for (let i = 0; i < hex.length; i += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  }
+  return str;
+}
