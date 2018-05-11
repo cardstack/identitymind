@@ -84,6 +84,8 @@ const docUploadFields = {
   }
 };
 
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
+
 export default Component.extend({
   classNames: ['kyc-form'],
   store:  service(),
@@ -150,7 +152,7 @@ export default Component.extend({
     if (!file) { return; }
 
     this.set(`model.${field}FileSize`, file.size);
-    this.set(`model.${field}FileName`, file.name);
+    if (file.size <= MAX_FILE_SIZE) this.set(`model.${field}FileName`, file.name);
 
     if (this.get(`model.validations.attrs.${field}.isValid`)) {
       let reader  = new FileReader();
