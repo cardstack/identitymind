@@ -53,6 +53,7 @@ describe('identitymind/indexer', function() {
 
   async function teardown() {
     await destroyDefaultEnvironment(env);
+    expect(nock.activeMocks().length).to.equal(0, "There are active nock mocks that should have been called");
   }
 
   beforeEach(setup);

@@ -10,6 +10,9 @@ const nock                    = require('nock');
 const { resolve }             = require('path');
 const { promisify }           = require("util");
 const pdfText                 = promisify(require('pdf-text'));
+const { s3 }                  = require('../cardstack/s3');
+const sinon                   = require('sinon');
+const moment                  = require('moment');
 
 const {
   createDefaultEnvironment,
@@ -34,6 +37,7 @@ describe('identitymind/middleware', function() {
             userModel:  'users',
             kycField:   'kyc-transaction',
             formAField: 'form-a-status',
+            formATimestampField: 'form-a-timestamp',
             nameField:  'full-legal-name',
             emailField: 'email',
             messageSinkId: 'email-sink',
@@ -71,6 +75,9 @@ Cardstack team
       factory.addResource('fields', 'form-a-status').withAttributes({
         fieldType: '@cardstack/core-types::string'
       }),
+      factory.addResource('fields', 'form-a-timestamp').withAttributes({
+        fieldType: '@cardstack/core-types::date'
+      }),
       factory.addResource('fields', 'full-legal-name').withAttributes({
         fieldType: '@cardstack/core-types::string'
       }),
@@ -83,6 +90,13 @@ Cardstack team
       'kyc-transaction':  '92514582',
       'form-a-status':    'INITIAL',
       'full-legal-name':  'Mr Test User',
+      'email':            'testuser@example.com'
+    });
+
+    factory.addResource('users', 'user-with-kyc-and-non-ascii-name').withAttributes({
+      'kyc-transaction':  '92514583',
+      'form-a-status':    'INITIAL',
+      'full-legal-name':  'Mr Têst Üser',
       'email':            'testuser@example.com'
     });
 
@@ -110,10 +124,14 @@ Cardstack team
 
     await env.lookup('hub:indexers').update({ forceRefresh: true });
     searcher = env.lookup('hub:searchers');
+
+    sinon.replace(s3, 'upload', sinon.fake.returns({ promise() { return Promise.resolve(); } }));
   }
 
   async function teardown() {
     await destroyDefaultEnvironment(env);
+    sinon.restore();
+    expect(nock.activeMocks().length).to.equal(0, "There are active nock mocks that should have been called");
   }
 
   beforeEach(setup);
@@ -203,11 +221,6 @@ Cardstack team
     it("Uploads the document if there is a user logged in with a kyc transaction and they send a file", async function() {
       await env.setUser('users', 'user-with-kyc');
 
-      nock('https://test.identitymind.com')
-        .post("/im/account/consumer/92514582/files", body => body.length > 10000)
-        .basicAuth({ user: 'testuser', pass: 'testpass' })
-        .reply(200);
-
       let passportPath = resolve('./node-tests/fixtures/passport.jpg');
       let response = await request.post(`/identitymind/document-uploads`)
         .attach('file', passportPath);
@@ -217,6 +230,37 @@ Cardstack team
       let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc')).data;
 
       expect(user.attributes['form-a-status']).to.equal("PENDING");
+
+      let timestamp = user.attributes['form-a-timestamp'];
+      expect(timestamp).to.be.ok;
+      expect(timestamp).to.be.afterMoment(moment().subtract(2, 'seconds'));
+      expect(timestamp).to.be.beforeMoment(moment());
+
+      expect(s3.upload).to.have.been.called.once;
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-MrTestUser.pdf" });
+    });
+
+    it("Uploads the document with the transaction id if there are non-ascii characters in the user's name", async function() {
+      await env.setUser('users', 'user-with-kyc-and-non-ascii-name');
+
+      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let response = await request.post(`/identitymind/document-uploads`)
+        .attach('file', passportPath);
+
+      expect(response).hasStatus(201);
+
+      let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc-and-non-ascii-name')).data;
+
+      expect(user.attributes['form-a-status']).to.equal("PENDING");
+
+      let timestamp = user.attributes['form-a-timestamp'];
+      expect(timestamp).to.be.ok;
+      expect(timestamp).to.be.afterMoment(moment().subtract(2, 'seconds'));
+      expect(timestamp).to.be.beforeMoment(moment());
+
+      expect(s3.upload).to.have.been.called.once;
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514583/FormA-92514583.pdf" });
+
     });
   });
 
