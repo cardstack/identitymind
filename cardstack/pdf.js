@@ -75,7 +75,8 @@ class Pdf {
 
     this.doc.moveDown(3);
 
-    this.text("The client herewith confirms that she/he is not a PEP (politically exposed person) nor is she/he related to any PEP. The client furthermore confirms that she/he is not a US citizen, green card holder or resident of the United States of America. The customer is obliged to inform BTCS about any changes in the above data.");
+    this.text("The client herewith confirms that she/he is not a PEP (politically exposed person) nor is she/he related to any PEP. The client furthermore confirms that she/he is not a US citizen, green card holder or resident of the United States of America. The customer is obliged to inform BTCS about any changes in the above data.",
+      marginLeft, this.doc.y);
 
     this.doc.moveDown(5);
 
