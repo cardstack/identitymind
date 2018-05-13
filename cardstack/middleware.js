@@ -8,6 +8,7 @@ const Pdf                     = require('./pdf');
 const Session                 = require('@cardstack/plugin-utils/session');
 const Handlebars              = require('handlebars');
 const { s3Upload }            = require('./s3');
+const mime                    = require('mime-types');
 
 module.exports = declareInjections({
   indexer:    'hub:indexers',
@@ -125,7 +126,7 @@ class IdentityMindMiddleware {
         name = kycTransactionId;
       }
 
-      let key = `${kycTransactionId}/FormA-${name}.pdf`;
+      let key = `${kycTransactionId}/FormA-${name}.${mime.extension(file.mimeType)}`;
 
       await s3Upload(key, file);
 
