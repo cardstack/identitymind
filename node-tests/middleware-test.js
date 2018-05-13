@@ -211,7 +211,7 @@ Cardstack team
     it("Returns 400 if they user is logged in and they attach a file with the wrong key", async function() {
       expect(nock.isActive()).to.be.true; // will error if http request is attempted
       await env.setUser('users', 'user-with-kyc');
-      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let passportPath = resolve('./node-tests/fixtures/forma.pdf');
       let response = await request.post(`/identitymind/document-uploads`)
         .attach('somebadkey', passportPath);
 
@@ -221,7 +221,7 @@ Cardstack team
     it("Uploads the document if there is a user logged in with a kyc transaction and they send a file", async function() {
       await env.setUser('users', 'user-with-kyc');
 
-      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let passportPath = resolve('./node-tests/fixtures/forma.pdf');
       let response = await request.post(`/identitymind/document-uploads`)
         .attach('file', passportPath);
 
@@ -243,7 +243,7 @@ Cardstack team
     it("Uploads the document with the transaction id if there are non-ascii characters in the user's name", async function() {
       await env.setUser('users', 'user-with-kyc-and-non-ascii-name');
 
-      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let passportPath = resolve('./node-tests/fixtures/forma.pdf');
       let response = await request.post(`/identitymind/document-uploads`)
         .attach('file', passportPath);
 
@@ -260,6 +260,29 @@ Cardstack team
 
       expect(s3.upload).to.have.been.called.once;
       expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514583/FormA-92514583.pdf" });
+
+    });
+
+    it("Uploads the document as a jpeg if a jpeg is uploaded", async function() {
+      await env.setUser('users', 'user-with-kyc-and-non-ascii-name');
+
+      let passportPath = resolve('./node-tests/fixtures/passport.jpg');
+      let response = await request.post(`/identitymind/document-uploads`)
+        .attach('file', passportPath);
+
+      expect(response).hasStatus(201);
+
+      let user = (await searcher.get(env.session, 'master', 'users', 'user-with-kyc-and-non-ascii-name')).data;
+
+      expect(user.attributes['form-a-status']).to.equal("PENDING");
+
+      let timestamp = user.attributes['form-a-timestamp'];
+      expect(timestamp).to.be.ok;
+      expect(timestamp).to.be.afterMoment(moment().subtract(2, 'seconds'));
+      expect(timestamp).to.be.beforeMoment(moment());
+
+      expect(s3.upload).to.have.been.called.once;
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514583/FormA-92514583.jpeg" });
 
     });
   });
