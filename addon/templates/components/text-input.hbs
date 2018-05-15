@@ -14,7 +14,7 @@
   {{input type=info.type value=value class='modal-input' name=field id=(concat "kyc-field_" field) disabled=isDisabled placeholder=(if (eq info.type 'date') "mm/dd/yyyy")}}
 {{/if}}
 {{#if info.instructions}}
-  <p class="kyc-field-instructions">{{info.instructions}}</p>
+  <p class="kyc-field-instructions">{{{info.instructions}}}</p>
 {{/if}}
 {{#if showErrorMessage}}
   <div class='field-error'>
