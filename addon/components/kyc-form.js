@@ -28,7 +28,7 @@ const fields = {
   dob: {
     name: "Date of Birth",
     hint: "User's date of birth",
-    instructions: "Please enter date in the Month/Day/Year format. E.g., if your birthday is February 5, 1980, enter 02/05/1980, and NOT 05/02/1980.",
+    instructions: "Please enter date in the <span class=\"hot-pink\">Month/Day/Year format</span>. E.g., if your birthday is February 5, 1980, enter 02/05/1980, and NOT 05/02/1980.",
     type: "date",
     required: true
   },
@@ -68,14 +68,14 @@ const docUploadFields = {
   scanData: {
     name: 'Passport Scan',
     hint: "Scan of state-issued passport",
-    instructions: "Please upload a photograph or scanned image of a state-issued, international passport or a national Schengen ID (if you use a Schengen ID, you need to include both front and back in your file). Make sure your image is clear and detailed; low-quality images will be rejected. The file size limit for uploads is 4 MB.",
+    instructions: "Please upload a photograph or scanned image of a state-issued, <span class=\"hot-pink\">international passport</span> or a <span class=\"hot-pink\">national Schengen ID</span> (if you use a Schengen ID, you need to include both <span class=\"hot-pink\">front and back</span> in your file). Make sure your image is clear and detailed; low-quality images will be rejected. The file size limit for uploads is 4 MB.",
     type: "file",
     required: true
   },
   addressScanData: {
     name: "Proof of Address",
     hint: "Scan of utility bill",
-    instructions: "Please upload a photograph or scanned image of a document within the last 3 months that lists your name and residential address. Acceptable documents include bank statements, utility bills, ID, or a household registration. Documents should be in a Latin alphabet. If not, please attach a translation certified by a notarized translation agency. Self-translations will not be accepted. Make sure your image is clear and detailed; low-quality images will be rejected.",
+    instructions: "Please upload a photograph or scanned image of a document within the last 3 months that lists your name and residential address. Acceptable documents include bank statements, utility bills, ID, or a household registration. Documents should be in a <span class=\"hot-pink\">Latin alphabet</span>. If not, please attach a translation certified by a <span class=\"hot-pink\">notarized translation agency</span>. Self-translations will not be accepted. Make sure your image is clear and detailed; low-quality images will be rejected.",
     type: "file",
     required: true
   },
