@@ -68,14 +68,12 @@ const docUploadFields = {
   scanData: {
     name: 'Passport Scan',
     hint: "Scan of state-issued passport",
-    instructions: "Please upload a photograph or scanned image of a state-issued, <span class=\"hot-pink\">international passport</span> or a <span class=\"hot-pink\">national Schengen ID</span> (if you use a Schengen ID, you need to include both <span class=\"hot-pink\">front and back</span> in your file). Make sure your image is clear and detailed; low-quality images will be rejected. The file size limit for uploads is 4 MB.",
     type: "file",
     required: true
   },
   addressScanData: {
     name: "Proof of Address",
     hint: "Scan of utility bill",
-    instructions: "Please upload a photograph or scanned image of a document within the last 3 months that lists your name and residential address. Acceptable documents include bank statements, utility bills, ID, or a household registration. Documents should be in a <span class=\"hot-pink\">Latin alphabet</span>. If not, please attach a translation certified by a <span class=\"hot-pink\">notarized translation agency</span>. Self-translations will not be accepted. Make sure your image is clear and detailed; low-quality images will be rejected.",
     type: "file",
     required: true
   },
