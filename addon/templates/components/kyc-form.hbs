@@ -17,9 +17,6 @@
       {{#each-in docUploadFields as |field info|}}
         {{file-input model=model field=field info=info didValidate=didValidate isDisabled=(or submitKyc.isRunning info.disabled) assignFile=assignFile}}
       {{/each-in}}
-      <div class="upload-instructions">
-        <div class="instructions-text">For security purposes, we require you upload a full color portrait of yourself holding your passport as shown in the example.</div>
-      </div>
     </fieldset>
     <button onclick={{perform submitKyc}} disabled={{submitKyc.isRunning}}
     class="button submit dark">Submit Application</button>

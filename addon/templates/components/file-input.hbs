@@ -15,7 +15,32 @@
     </div>
   {{/if}}
   <div class="file-title">{{get model (concat field 'FileName')}}</div>
-  {{#if info.instructions}}
-    <p class="kyc-field-instructions doc-upload-info">{{{info.instructions}}}</p>
+  {{#if (eq field 'scanData')}}
+    <p class="kyc-field-instructions doc-upload-info">
+      Upload a photo/scan of a valid <strong class="hot-pink">international passport</strong> or a <strong class="hot-pink">national Schengen ID</strong> (if you use a Schengen ID, include both <strong class="hot-pink">front and back</strong> in one file). Make sure your image:
+      <ul>
+        <li>Is <strong class="hot-pink">high-resolution</strong> (low-quality images will be rejected)</li>
+        <li>Has a visible signature (that matches your signature on Form A)</li>
+        <li>Is less than 4 MB in size</li>
+      </ul>
+    </p>
+  {{else if (eq field 'addressScanData')}}
+    <p class="kyc-field-instructions doc-upload-info">
+      Upload a photograph or scanned image of an official document that:
+      <ul>
+        <li>Lists your name and address, which must match the name and address in your other documents (e.g. bank statements, utility bills, ID, or a household registration)</li>
+        <li>Is dated <strong class="hot-pink">no more than 3 months old</strong></li>
+        <li>Is in a <strong class="hot-pink">Latin alphabet</strong></li>
+        <li>If not, attach a translation certified by a <strong class="hot-pink">notarized translation</strong> agency (self-translations will not be accepted)</li>
+        <li>Shows the <strong class="hot-pink">complete</strong> document</li>
+        <li>Is <strong class="hot-pink">high-resolution</strong> (low-quality images will be rejected)</li>
+      </ul>
+    </p>
+  {{else if (eq field 'faceImageData')}}
+    <div class="face-image-upload-instructions">
+      <p class="kyc-field-instructions doc-upload-info">
+        For security purposes, we require you to upload a <strong class="hot-pink">full color portrait</strong> of yourself holding your passport/Schengen ID as shown in the example. Make sure the <strong class="hot-pink">whole passport/Schengen ID is visible</strong> and <strong class="hot-pink">easy to read</strong>, and that your hand is not covering any part of it.
+      </p>
+    </div>
   {{/if}}
 </div>
