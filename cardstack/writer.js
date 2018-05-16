@@ -40,7 +40,6 @@ class Writer {
 
       let { scanData, addressScanData, faceImageData } = mappedAttributes;
 
-      delete mappedAttributes.scanData;
       delete mappedAttributes.addressScanData;
       delete mappedAttributes.faceImageData;
 
