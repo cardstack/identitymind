@@ -52,6 +52,11 @@ class Writer {
         mappedAttributes.ip = session.meta.ip;
       }
 
+      if (mappedAttributes.scanData) {
+        mappedAttributes.docType = "PP";
+        mappedAttributes.docCountry = mappedAttributes.sco;
+      }
+
       let kycResult = await kyc(mappedAttributes, this.config);
 
       let newAttributes = mapKeys(kycResult, (v, k) => kebabCase(k));

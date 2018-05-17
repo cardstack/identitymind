@@ -413,6 +413,76 @@ describe('identitymind/writer', function() {
 
     });
 
+    it("sends the docType and docCountry if scanData is present", async function() {
+      nock('https://test.identitymind.com')
+        .post('/im/account/consumer', body => body.stage === 1 && body.scanData && body.docType === "PP" && body.docCountry === "GB" && !body.addressScanData && !body.faceImageData)
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200, imResponse("MANUAL_REVIEW"));
+
+
+      let session = sessions.create('users', 'create-only');
+
+      await writer.create('master', session, 'identitymind-verifications', {
+        type: 'identitymind-verifications',
+        attributes: {
+          man:                'test@example.com',
+          "scan-data":            dataUriText('scan data content'),
+          'address-scan-data':    dataUriText('address scan data content'),
+          "face-image-data":      dataUriText('face image data content'),
+          sco: "GB"
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
+          }
+        }
+      });
+
+      expect(s3.upload).to.have.callCount(4);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("scan data content"), Key: "92514582/Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
+
+    });
+
+    it("doesn't send docType or docCountry without scanData present", async function() {
+      nock('https://test.identitymind.com')
+        .post('/im/account/consumer', body => body.stage === 1 && !body.scanData && !body.docType && !body.docCountry && !body.addressScanData && !body.faceImageData)
+        .basicAuth({ user: 'testuser', pass: 'testpass' })
+        .reply(200, imResponse("MANUAL_REVIEW"));
+
+
+      let session = sessions.create('users', 'create-only');
+
+      await writer.create('master', session, 'identitymind-verifications', {
+        type: 'identitymind-verifications',
+        attributes: {
+          man:                'test@example.com',
+          'address-scan-data':    dataUriText('address scan data content'),
+          "face-image-data":      dataUriText('face image data content'),
+          sco: "GB"
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
+          }
+        }
+      });
+
+      expect(s3.upload).to.have.callCount(3);
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("address scan data content"), Key: "92514582/Address Scan Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Body: Buffer.from("face image data content"), Key: "92514582/Face Image Data.txt" });
+      expect(s3.upload).to.have.been.calledWithMatch({ Key: "92514582/FormA-92514582 (Blank).pdf" });
+
+    });
+
     it("handles submission when the initial result is rejected for blacklist", async function() {
       nock('https://test.identitymind.com')
         .post('/im/account/consumer', body => body.stage === 1 && body.scanData && !body.addressScanData && !body.faceImageData)
