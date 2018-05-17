@@ -17,7 +17,7 @@ const validInputValues = {
 };
 
 export function uploadFile(selector) {
-  let file = new Blob(['text-image'], {type : 'text/plain'});
+  let file = new Blob(["a".repeat(500000)], {type : 'text/plain'});
   file.name = 'test.txt';
 
   find(selector).dispatchEvent(new CustomEvent('change', { detail: { testingFiles: [file] } }));

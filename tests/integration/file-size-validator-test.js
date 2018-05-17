@@ -7,10 +7,10 @@ import { setupTest } from 'ember-qunit';
 module('Integration | Validations | File Size', function(hooks) {
   setupTest(hooks);
 
-  
+
   test('no options', function(assert) {
     assert.expect(1);
-    
+
     let validator = this.owner.lookup('validator:file-size');
     let builtOptions = validator.buildOptions({}).toObject();
 
@@ -38,16 +38,35 @@ module('Integration | Validations | File Size', function(hooks) {
 
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'favoriteSelfieFileSize has not been set');
     assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'I wanna see your selfie!', 'error message is correct');
-    
+
     obj.set('favoriteSelfieFileSize', 238746);
-    
+
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too small');
-    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'Your uploaded file must be larger than 1 MB', 'error message is correct');
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file must be at least 1 MB in size. Please try again.', 'error message is correct');
 
     obj.set('favoriteSelfieFileSize', 23987420);
-    
+
     assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too large');
     assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file you are trying to upload exceeds the file size limit of 4 MB. Please try again.', 'error message is correct');
+  });
+
+  test('can specify minInKb', function(assert) {
+    this.owner.register('validator:file-size', FileSizeValidator);
+
+    let FileSizeValidations = buildValidations({
+      favoriteSelfie: validator('file-size', {
+        minInKb: 400
+      })
+    });
+
+    let obj = EmberObject.extend(FileSizeValidations).create(this.owner.ownerInjection(), {
+      favoriteSelfie: null
+    });
+
+    obj.set('favoriteSelfieFileSize', 238746);
+
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.isValid'), false, 'file is too small');
+    assert.equal(obj.get('validations.attrs.favoriteSelfie.message'), 'The file must be at least 400 KB in size. Please try again.', 'error message is correct');
   });
 
   test('use default not present message', function(assert) {

@@ -19,6 +19,7 @@ const Validations = buildValidations({
   bc: validator('presence', true),
   bco: validator('presence', true),
   scanData: validator('file-size', {
+    minInKb: 400,
     maxInMb: 4,
     notPresentMessage: 'This document is required'
   }),
@@ -30,7 +31,6 @@ const Validations = buildValidations({
     maxInMb: 4,
     notPresentMessage: 'This document is required'
   })
-  
 });
 
 export default IdentitymindVerification.extend(Validations, {
