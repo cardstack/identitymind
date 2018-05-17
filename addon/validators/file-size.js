@@ -11,11 +11,8 @@ const FileSize = BaseValidator.extend({
     if (options.maxInMb && fileSize > (options.maxInMb * 1024 * 1024)) {
       return `The file you are trying to upload exceeds the file size limit of ${options.maxInMb} MB. Please try again.`;
     }
-    if (options.minInKb && fileSize < (options.minInKb * 1024)) {
-      return `The file must be at least ${options.minInKb} KB in size. Please try again.`;
-    }
     if (options.minInMb && fileSize < (options.minInMb * 1024 * 1024)) {
-      return `The file must be at least ${options.minInMb} MB in size. Please try again.`;
+      return `Your uploaded file must be larger than ${options.minInMb} MB`;
     }
     return true;
   }
