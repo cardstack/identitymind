@@ -53,6 +53,15 @@ describe('identitymind/writer', function() {
       name: 'Goodfirst Goodlast'
     });
 
+    factory.addResource('grants').withAttributes({
+      mayCreateResource: true,
+      mayWriteFields: true,
+      mayReadResource: true,
+      mayReadFields: true
+    })
+    .withRelated('who', [{ type: 'fields', id: 'user'}])
+    .withRelated('types', [{ type: 'content-types', id: 'identitymind-verifications'}]);
+
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
 
     await env.lookup('hub:indexers').update({ forceRefresh: true });
