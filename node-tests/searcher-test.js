@@ -49,6 +49,16 @@ describe('identitymind/searcher', function() {
 
     factory.addResource('users', 'user-with-no-kyc');
 
+    factory.addResource('grants').withAttributes({
+      mayCreateResource: true,
+      mayWriteFields: true,
+      mayReadResource: true,
+      mayReadFields: true
+    })
+    .withRelated('who', [{ type: 'fields', id: 'user'}])
+    .withRelated('types', [{ type: 'content-types', id: 'identitymind-verifications'}]);
+
+
     if (fn) { await fn(factory); }
 
     env = await createDefaultEnvironment(`${__dirname}/..`, factory.getModels());
