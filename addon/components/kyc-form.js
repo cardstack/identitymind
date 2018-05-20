@@ -28,7 +28,6 @@ const fields = {
   dob: {
     name: "Date of Birth",
     hint: "User's date of birth",
-    instructions: "Please enter date in the <span class=\"hot-pink\">Month/Day/Year format</span>. E.g., if your birthday is February 5, 1980, enter 02/05/1980, and NOT 05/02/1980.",
     type: "date",
     required: true
   },
