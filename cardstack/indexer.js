@@ -86,7 +86,7 @@ class Updater {
       for(let hint of hints) {
         if (hint.type === 'identitymind-verifications' && hint.source) {
           let data = await this._getVerification(hint.id);
-          await ops.save('identitymind-verifications', hint.id, data);
+          await ops.save('identitymind-verifications', hint.id, { data });
         }
       }
 
@@ -106,17 +106,11 @@ class Updater {
       }
     }
     for (let model of schema) {
-      await ops.save(model.type, model.id, model);
+      await ops.save(model.type, model.id, { data: model });
     }
     return {
       lastSchema: schema
     };
-  }
-
-  async read(type, id, isSchema) {
-    if (isSchema) {
-      return (await this.schema()).find(model => model.type === type && model.id === model.id);
-    }
   }
 
   async _getVerification(id) {

@@ -14,6 +14,7 @@ cache:
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH=$HOME/.yarn/bin:$PATH
+  - docker run -d -p 5444:5432 --rm cardstack/pg-test
   - docker run -d -p 9200:9200 --rm cardstack/elasticsearch:dev
 
 install:

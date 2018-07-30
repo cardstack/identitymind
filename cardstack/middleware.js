@@ -49,7 +49,7 @@ class IdentityMindMiddleware {
       }
 
       // Lookup the verification that is posted to refresh it from the api
-      this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid, source: 'webhook' }] });
+      await this.indexer.update({ hints: [{ type: "identitymind-verifications", id: body.tid, source: 'webhook' }] });
 
 
       let config = await this.pluginConfig();
@@ -133,8 +133,7 @@ class IdentityMindMiddleware {
       user.data.attributes[config.formAField] = 'PENDING';
       user.data.attributes[config.formATimestampField] = moment().format();
 
-      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, user.data.type, user.data.id, user.data);
-      await this.indexer.update({ forceRefresh: true });
+      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, user.data.type, user.data.id, user);
 
       addCorsHeaders(ctxt.response);
       ctxt.body = {status: "uploaded"};
