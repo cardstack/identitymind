@@ -16,24 +16,22 @@ const { mapKeys, camelCase, kebabCase }  = require('lodash');
 module.exports = declareInjections({
   searcher:           'hub:searchers',
   writer:             'hub:writers',
-  indexer:            'hub:indexers'
 },
 
 class Writer {
   static create(params) {
     return new this(params);
   }
-  constructor({ dataSource, config, searcher, writer, indexer }) {
+  constructor({ dataSource, config, searcher, writer }) {
     this.dataSource         = dataSource;
     this.config             = config;
     this.searcher           = searcher;
     this.writer             = writer;
-    this.indexer            = indexer;
   }
 
   async prepareCreate(branch, session, type, document /*, isSchema */) {
     let finalizer = async (pendingChange) => {
-      let { attributes } = pendingChange.finalDocument;
+      let { attributes, relationships } = pendingChange.finalDocument;
 
       let mappedAttributes = mapKeys(attributes, (v, k) => camelCase(k));
       mappedAttributes.stage = 1;
@@ -73,13 +71,13 @@ class Writer {
       await this._uploadBlankFormA(id, mappedAttributes);
 
       userData.attributes[this.config.kycField] = id;
-      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, userData);
-      await this.indexer.update({ forceRefresh: true });
+      await this.writer.update(this.searcher.controllingBranch.name, Session.INTERNAL_PRIVILEGED, this.config.userModel, session.id, { data: userData });
 
       pendingChange.finalDocument = {
         type: 'identitymind-verifications',
         id,
-        attributes: newAttributes
+        attributes: newAttributes,
+        relationships
       };
     };
 

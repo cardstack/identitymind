@@ -91,16 +91,18 @@ describe('identitymind/writer', function() {
       .reply(200, sampleResponse);
 
 
-    let created = await writer.create('master', sessions.create('users', 'create-only'), 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        bsn:          '123 a street'
-      },
-      relationships: {
-        user: {
-          data: {
-            id: 'create-only',
-            type: 'users'
+    let { data:created } = await writer.create('master', sessions.create('users', 'create-only'), 'identitymind-verifications', {
+      data: {
+        type: 'identitymind-verifications',
+        attributes: {
+          bsn:          '123 a street'
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
           }
         }
       }
@@ -133,15 +135,17 @@ describe('identitymind/writer', function() {
     let session = sessions.create('users', 'create-only');
 
     await writer.create('master', session, 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        bsn: '123 a street'
-      },
-      relationships: {
-        user: {
-          data: {
-            id: 'create-only',
-            type: 'users'
+      data: {
+        type: 'identitymind-verifications',
+        attributes: {
+          bsn: '123 a street'
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
           }
         }
       }
@@ -162,15 +166,17 @@ describe('identitymind/writer', function() {
     let session = sessions.create('users', 'create-only');
 
     await writer.create('master', session, 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        tea: 'bademail@example.com'
-      },
-      relationships: {
-        user: {
-          data: {
-            id: 'create-only',
-            type: 'users'
+      data: {
+        type: 'identitymind-verifications',
+        attributes: {
+          tea: 'bademail@example.com'
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
           }
         }
       }
@@ -191,17 +197,19 @@ describe('identitymind/writer', function() {
     let session = sessions.create('users', 'create-only');
 
     await writer.create('master', session, 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        man: 'New Name',
-        bfn: 'New',
-        bln: 'Name'
-      },
-      relationships: {
-        user: {
-          data: {
-            id: 'create-only',
-            type: 'users'
+      data: {
+        type: 'identitymind-verifications',
+        attributes: {
+          man: 'New Name',
+          bfn: 'New',
+          bln: 'Name'
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
           }
         }
       }
@@ -223,15 +231,17 @@ describe('identitymind/writer', function() {
     let session = sessions.create('users', 'create-only', {ip: '1.2.3.4'});
 
     await writer.create('master', session, 'identitymind-verifications', {
-      type: 'identitymind-verifications',
-      attributes: {
-        man: 'test@example.com'
-      },
-      relationships: {
-        user: {
-          data: {
-            id: 'create-only',
-            type: 'users'
+      data: {
+        type: 'identitymind-verifications',
+        attributes: {
+          man: 'test@example.com'
+        },
+        relationships: {
+          user: {
+            data: {
+              id: 'create-only',
+              type: 'users'
+            }
           }
         }
       }
@@ -283,18 +293,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content')
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -397,18 +409,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content')
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -432,19 +446,21 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content'),
-          sco: "GB"
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content'),
+            sco: "GB"
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -468,18 +484,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content'),
-          sco: "GB"
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content'),
+            sco: "GB"
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -501,18 +519,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content')
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -534,18 +554,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content')
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
@@ -567,18 +589,20 @@ describe('identitymind/writer', function() {
       let session = sessions.create('users', 'create-only');
 
       await writer.create('master', session, 'identitymind-verifications', {
-        type: 'identitymind-verifications',
-        attributes: {
-          man:                'test@example.com',
-          "scan-data":            dataUriText('scan data content'),
-          'address-scan-data':    dataUriText('address scan data content'),
-          "face-image-data":      dataUriText('face image data content')
-        },
-        relationships: {
-          user: {
-            data: {
-              id: 'create-only',
-              type: 'users'
+        data: {
+          type: 'identitymind-verifications',
+          attributes: {
+            man:                'test@example.com',
+            "scan-data":            dataUriText('scan data content'),
+            'address-scan-data':    dataUriText('address scan data content'),
+            "face-image-data":      dataUriText('face image data content')
+          },
+          relationships: {
+            user: {
+              data: {
+                id: 'create-only',
+                type: 'users'
+              }
             }
           }
         }
